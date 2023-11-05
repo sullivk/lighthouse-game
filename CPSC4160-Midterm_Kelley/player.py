@@ -24,9 +24,15 @@ class Character(pygame.sprite.Sprite):
         self.rectWidth = 200
         self.rectHeight = 275
 
-        self.down_states = { }     
+        # Jump info
+        self.is_jumping = False
+        self.jump_count = 10
+        #self.ground_level = position[1]
+        self.ground_level = 600 - 135 - 250
+
+        self.down_states = { 0: (35, 602, self.rectWidth, self.rectHeight) }     
             
-        self.up_states = { }  
+        self.up_states = { 0: (35, 602, self.rectWidth, self.rectHeight) }  
         
          
         self.right_states = { 0: (35, 602, self.rectWidth, self.rectHeight), 
@@ -73,10 +79,22 @@ class Character(pygame.sprite.Sprite):
             self.rect.x += 5
         if direction == 'up':
             self.clip(self.up_states)
-            self.rect.y -= 5
+            #self.rect.y -= 5
         if direction == 'down':
             self.clip(self.down_states)
-            self.rect.y += 5
+            #self.rect.y += 5
+        if self.is_jumping:
+            if self.jump_count >= -10:
+                neg = 1
+                if self.jump_count < 0:
+                    neg = -1
+                new_y = self.rect.y - (self.jump_count ** 2) * 0.5 * neg
+                self.rect.y = new_y
+                self.jump_count -= 1
+            else:
+                self.is_jumping = False
+                self.jump_count = 10
+                self.rect.y = self.ground_level
 
         if direction == 'stand_left':
             self.clip(self.left_states[0])
@@ -98,7 +116,9 @@ class Character(pygame.sprite.Sprite):
             if event.key == pygame.K_RIGHT:
                 self.update('right')
             if event.key == pygame.K_UP:
-                self.update('up')
+                #self.update('up')
+                if not self.is_jumping:
+                    self.is_jumping = True
             if event.key == pygame.K_DOWN:
                 self.update('down')
 

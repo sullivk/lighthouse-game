@@ -35,7 +35,7 @@ right_scroll_limit = min_bg_width - SCREEN_WIDTH
 ground_image = pygame.image.load("BG1/ground.png").convert_alpha()
 	
 ground_width = ground_image.get_width()	
-ground_height = ground_image.get_height()	
+ground_height = ground_image.get_height()
 
 #draw background images 
 def draw_bg():
@@ -54,11 +54,6 @@ def draw_ground():
 
 player = player.Character((20, SCREEN_HEIGHT - ground_height - 250))
 
-# Player height/jump info
-player_y = SCREEN_HEIGHT - ground_height - 250
-player_jump = False
-jump_count = 10
-
 # Game loop
 run = True
 while run:
@@ -71,10 +66,8 @@ while run:
     key = pygame.key.get_pressed()
     if key[pygame.K_LEFT] and scroll > 0:
         scroll -= 5
-
     if key[pygame.K_RIGHT] and scroll < right_scroll_limit:
         scroll += 5
-    
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
@@ -83,19 +76,6 @@ while run:
                 run = False
 
     key = pygame.key.get_pressed()
-    if key[pygame.K_SPACE] and not player_jump:
-        player_jump = True
-    
-    if player_jump:
-        if jump_count >= -10:
-            neg = 1
-            if jump_count < 0:
-                neg = -1
-            player_y -= (jump_count ** 2) * 0.5 * neg
-            jump_count -= 1
-        else:
-            player_jump = False
-            jump_count = 10
 
     if scroll > 0 and scroll < right_scroll_limit: 
         player.handle_event(event)
@@ -106,8 +86,6 @@ while run:
         else:
             end_screen.key = pygame.K_LEFT
         player.handle_event(end_screen)
-
-    player.update((20, player_y))
 
     screen.blit(player.image, player.rect)
     
