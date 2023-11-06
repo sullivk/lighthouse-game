@@ -47,16 +47,17 @@ def draw_bg():
     global scroll
     speed = 1
     for x in range(2):
-        screen.blit(bg_images[x], (int(0 - scroll * speed * 0.25), 0))
+        if x < len(current_level): 
+            screen.blit(current_level[x], (int(0 - scroll * speed * 0.25), 0))
         speed += 0.2
     for y in range(2, 4):
-        screen.blit(bg_images[y], (int(0 - scroll * speed * 0.5), SCREEN_HEIGHT * 0.5))
+        if y < len(current_level):  # Check if the index is within the list
+            screen.blit(current_level[y], (int(0 - scroll * speed * 0.5), SCREEN_HEIGHT * 0.5))
 
 # draw background
 def draw_ground():
     for x in range(5):
         screen.blit(ground_image, (0, SCREEN_HEIGHT - ground_height))
-
 
 player = player.Character((20, SCREEN_HEIGHT - ground_height - 250))
 
@@ -96,7 +97,7 @@ while run:
             if event.key == pygame.K_ESCAPE:
                 run = False
             if at_lighthouse_entrance_door:
-                if event.type == pygame.K_y:
+                if event.key == pygame.K_y:
                     # Transition to the new level (BG2)
                     current_level = [bg2_image]
                     # Place the player next to the door
@@ -120,9 +121,14 @@ while run:
 
     # Display the prompt if the player is at the door
     if at_lighthouse_entrance_door:
+        # Draw a white background for the prompt
+        prompt_bg = pygame.Surface((400, 100))
+        prompt_bg.fill((255, 255, 255))
+        screen.blit(prompt_bg, (200, 250))
+
         prompt_font = pygame.font.Font(None, 36)
         prompt_text = prompt_font.render(
-                "Do you want to enter the lighthouse? (Y/N)", True, (255, 255, 255)
+                "Do you want to enter the lighthouse? (Y/N)", True, (0, 0, 0)
             )
         prompt_rect = prompt_text.get_rect(
             center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 - 60)
