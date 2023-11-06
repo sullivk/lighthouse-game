@@ -105,6 +105,63 @@ def switch_level(new_level, new_scroll):
     current_level = [new_level]
     scroll = new_scroll
     at_lighthouse_entrance_door = False
+    
+# Initialize the arrow position to "Yes" by default
+arrow_position = "Yes"
+    
+# Function to display the custom Pokemon-style prompt
+def display_pokemon_style_prompt(arrow_position):
+    # Create a custom dialogue box background
+    prompt_bg = pygame.Surface((400, 150))
+    prompt_bg.fill((255, 255, 255))  # Background color (white)
+
+    # Draw a border for the dialogue box
+    pygame.draw.rect(prompt_bg, (0, 0, 0), pygame.Rect(0, 0, 400, 150), 3)  # Border color (black), thickness 3
+
+    # Create a custom font for the text
+    prompt_font = pygame.font.Font(None, 24)  # You can adjust the font size as needed
+
+    # Render and display the text on the dialogue box
+    prompt_text = prompt_font.render("Do you want to enter the lighthouse? (Y/N)", True, (0, 0, 0))  # Text color (black)
+
+    # Position the text in the center of the dialogue box
+    text_rect = prompt_text.get_rect(center=(200, 50))
+
+    # Display the dialogue box with the text
+    prompt_bg.blit(prompt_text, text_rect)
+    
+    # Create a custom font for the selected option
+    selected_option_font = pygame.font.Font(None, 36)
+    
+    # Define Unicode arrow characters
+    arrow_yes = u"\u25B6"  # Right arrow
+    arrow_no = u"\u25B2"   # Up arrow
+    
+    # Define text for "Yes" and "No" options with arrow
+    text_yes = f"{arrow_yes} Yes"
+    text_no = f"{arrow_no} No"
+    
+    # Render and display the selected option with the arrow
+    if arrow_position == "Yes":
+        selected_text = selected_option_font.render(text_yes, True, (0, 0, 0))
+    elif arrow_position == "No":
+        selected_text = selected_option_font.render(text_no, True, (0, 0, 0))
+
+    selected_rect = selected_text.get_rect(center=(200, 110))  # Position the selected text
+
+    # Render and display the other option without the arrow
+    if arrow_position == "Yes":
+        other_text = prompt_font.render("No", True, (0, 0, 0))
+    elif arrow_position == "No":
+        other_text = prompt_font.render("Yes", True, (0, 0, 0))
+
+    other_rect = other_text.get_rect(center=(200, 140))  # Position the other text
+
+    # Display the selected and other options
+    prompt_bg.blit(selected_text, selected_rect)
+    prompt_bg.blit(other_text, other_rect)
+    
+    screen.blit(prompt_bg, (200, 450))
 
 # Game loop
 run = True
@@ -171,19 +228,29 @@ while run:
     # =================================
     # Display the prompt if the player is at the door
     if at_lighthouse_entrance_door:
+        # Display the custom Pokemon-style prompt
+        display_pokemon_style_prompt(arrow_position)
         # Draw a white background for the prompt
-        prompt_bg = pygame.Surface((400, 100))
-        prompt_bg.fill((255, 255, 255))
-        screen.blit(prompt_bg, (200, 250))
+        #prompt_bg = pygame.Surface((400, 100))
+        #prompt_bg.fill((255, 255, 255))
+        #screen.blit(prompt_bg, (200, 250))
 
-        prompt_font = pygame.font.Font(None, 36)
-        prompt_text = prompt_font.render(
-                "Do you want to enter the lighthouse? (Y/N)", True, (0, 0, 0)
-            )
-        prompt_rect = prompt_text.get_rect(
-            center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 - 60)
-        )
-        screen.blit(prompt_text, prompt_rect)
+        #prompt_font = pygame.font.Font(None, 36)
+        #prompt_text = prompt_font.render(
+        #        "Do you want to enter the lighthouse? (Y/N)", True, (0, 0, 0)
+        #    )
+        #prompt_rect = prompt_text.get_rect(
+        #    center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 - 60)
+        #)
+        #screen.blit(prompt_text, prompt_rect)
+        
+        # Handle user input for arrow navigation
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_UP:
+                    arrow_position = "Yes"
+                elif event.key == pygame.K_DOWN:
+                    arrow_position = "No"
 
     # Draw the player character
     screen.blit(player.image, player.rect)
