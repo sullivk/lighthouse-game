@@ -3,19 +3,29 @@ import player
 
 pygame.init()
 
-clock = pygame.time.Clock()
+# =========================================
+# Section 1: Initialization and Constants
+# =========================================
 
+# Initialize Pygame clock and FPS
+clock = pygame.time.Clock()
 FPS = 60
 
+# Screen dimensions
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
+# Create the game window
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("The Lighthouse - Milestone 2")
 
 
-# define game variables
+# Game variables
 scroll = 0
+
+# ============================================
+# Section 2: Load Background Images and Ground
+# ============================================
 
 # Load background images
 bg_images = []
@@ -32,18 +42,35 @@ min_bg_width = min(bg.get_width() for bg in bg_images)
 # Initialize the right scrolling limit
 right_scroll_limit = min_bg_width - SCREEN_WIDTH
 
+# Load ground image
 ground_image = pygame.image.load("BG1/ground.png").convert_alpha()
-
 ground_width = ground_image.get_width()
 ground_height = ground_image.get_height()
 
+# ============================================
+# Section 3: Create New Levels
+# ============================================
+
 # Create a new level (BG2)
-bg2_image = pygame.image.load("BG2/IMG_1.png").convert_alpha()
-bg2_width = bg2_image.get_width()
-right_scroll_limit_bg2 = bg2_width - SCREEN_WIDTH
+#bg2_image = pygame.image.load("BG2/IMG_1.png").convert_alpha()
+#bg2_width = bg2_image.get_width()
+#right_scroll_limit_bg2 = bg2_width - SCREEN_WIDTH
+
+# Function to load a new level
+def load_level(level_folder):
+    level_image = pygame.image.load(level_folder).convert_alpha()
+    level_width = level_image.get_width()
+    return level_image, level_width
+
+# Load BG2 level
+bg2_image, right_scroll_limit_bg2 = load_level("BG2/IMG_1.png")
+
+# ========================================
+# Section 4: Draw Functions and Player
+# ========================================
 
 # draw background images
-def draw_bg():
+def draw_bg(current_level):
     global scroll
     speed = 1
     for x in range(2):
@@ -54,27 +81,44 @@ def draw_bg():
         if y < len(current_level):  # Check if the index is within the list
             screen.blit(current_level[y], (int(0 - scroll * speed * 0.5), SCREEN_HEIGHT * 0.5))
 
-# draw background
+# draw ground
 def draw_ground():
     for x in range(5):
         screen.blit(ground_image, (0, SCREEN_HEIGHT - ground_height))
 
+# Create the player character
 player = player.Character((20, SCREEN_HEIGHT - ground_height - 250))
 
-# Initialize the current level
+# ========================================
+# Section 5: Main Game Loop and Logic
+# ========================================
+
+# Initialize the current level to BG1
 current_level = bg_images
 
-# Flag to track if the player is at the door
+# Flag to track if the player is at the lighthouse entrance door
 at_lighthouse_entrance_door = False
+
+# Function to switch between levels
+def switch_level(new_level, new_scroll):
+    global current_level, scroll, at_lighthouse_entrance_door
+    current_level = [new_level]
+    scroll = new_scroll
+    at_lighthouse_entrance_door = False
 
 # Game loop
 run = True
 while run:
     clock.tick(FPS)
+    
+    # =================================
+    # Section 6: Draw Background and Ground
+    # =================================
 
-    draw_bg()
+    draw_bg(current_level) # Changed: draw_bg() -> draw_bg(current_level)
     draw_ground()
 
+    # Debug test
     print("CHECK")
     
     # Input data. Left and right keys to create the parallax effect
@@ -98,12 +142,15 @@ while run:
                 run = False
             if at_lighthouse_entrance_door:
                 if event.key == pygame.K_y:
+                    # Switch to the new level (BG2)
+                    switch_level(bg2_image, 0)
+                    
                     # Transition to the new level (BG2)
-                    current_level = [bg2_image]
+                    #current_level = [bg2_image]
                     # Place the player next to the door
-                    player.rect.x = 20
-                    player.rect.y = SCREEN_HEIGHT - ground_height - 250
-                    at_lighthouse_entrance_door = False
+                    #player.rect.x = 20
+                    #player.rect.y = SCREEN_HEIGHT - ground_height - 250
+                    #@at_lighthouse_entrance_door = False
                 elif event.key == pygame.K_n:
                     at_lighthouse_entrance_door = False
 
@@ -119,6 +166,9 @@ while run:
                 end_screen.key = pygame.K_LEFT
             player.handle_event(end_screen)
 
+    # =================================
+    # Section 7: Display Prompt and Player
+    # =================================
     # Display the prompt if the player is at the door
     if at_lighthouse_entrance_door:
         # Draw a white background for the prompt
@@ -135,7 +185,11 @@ while run:
         )
         screen.blit(prompt_text, prompt_rect)
 
+    # Draw the player character
     screen.blit(player.image, player.rect)
     pygame.display.update()
 
+# ========================
+# Section 8: Cleanup and Quit
+# ========================
 pygame.quit()
