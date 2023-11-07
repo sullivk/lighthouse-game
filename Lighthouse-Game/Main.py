@@ -1,6 +1,6 @@
 import pygame
 import player
-import os
+import sys
 
 pygame.init()
 
@@ -23,87 +23,41 @@ pygame.display.set_caption("The Lighthouse - Milestone 2")
 
 # Game variables
 scroll = 0
-current_level = 1
+current_level_num = 1
 level_folders = ["BG1", "BG2"]
-
-# Initialize a dictionary to store level data
-level_data = {}
-
 
 # ============================================
 # Section 2: Load Background Images and Ground
 # ============================================
 
-# Iterate over level folders
-for level_folder in level_folders:
-    print(f"Loading images for level: {level_folder}")
+# Load background images
+bg1_images = []
+bg2_images = []
 
-    # Load background images
-    bg_images = []
-    background_folder = os.path.join(level_folder, "background")
+for i in range(sys.maxsize):
+        bg1_image = pygame.image.load(f"/BG1/background/IMG_{i}.png").convert_alpha()
+        bg1_images.append(bg1_image)
 
-    i = 0
-    while True:
-        image_path = os.path.join(background_folder, f"IMG_{i}.png")
-        print("Checking path: " + image_path)
-        if os.path.exists(image_path):
-            bg_image = pygame.image.load(image_path).convert_alpha()
-            bg_images.append(bg_image)
-            print(f"Loaded background image: {image_path}")
-            i += 1
-        else:
-            break
-        
-    if len(bg_images) == 0:
-        print("Error Loading file.")
-        break
+for i in range(sys.maxsize):
+        bg2_image = pygame.image.load(f"/BG2/background/IMG_{i}.png").convert_alpha()
+        bg2_images.append(bg2_image)
 
-    bg_width = bg_images[0].get_width()
-    print(f"Background width: {bg_width}")
-    
-    # Calculate the minimum width of background images
-    min_bg_width = min(bg.get_width() for bg in bg_images)
-    print(f"Minimum background width: {min_bg_width}")
-    
-    # Initialize the right scrolling limit
-    right_scroll_limit = min_bg_width - SCREEN_WIDTH
-    print(f"Right scroll limit: {right_scroll_limit}")
-    
-    # Load ground image
-    ground_image = pygame.image.load(os.path.join(level_folder, "ground/ground.png")).convert_alpha()
-    ground_width = ground_image.get_width()
-    ground_height = ground_image.get_height()
-    print(f"Loaded ground image: {os.path.join(level_folder, 'ground/ground.png')}")
-    print(f"Ground image width: {ground_width}")
-    print(f"Ground image height: {ground_height}")
-
-    # Store the level data in the dictionary
-    level_data[level_folder] = {
-        "bg_images": bg_images,
-        "bg_width": bg_width,
-        "min_bg_width": min_bg_width,
-        "right_scroll_limit": right_scroll_limit,
-        "ground_image": ground_image,
-        "ground_width": ground_width,
-        "ground_height": ground_height,
-    }
-
-#for j in range(4):
-#    bg_image = pygame.image.load(f"BG1/IMG_{j}.png").convert_alpha()
-#    bg_images.append(bg_image)
-
-#bg_width = bg_images[0].get_width()
+bg1_width = bg1_images[0].get_width()
+bg2_width = bg2_images[0].get_width()
 
 # Calculate the minimum width of background images
-#min_bg_width = min(bg.get_width() for bg in bg_images)
+min_bg1_width = min(bg.get_width() for bg in bg1_images)
+min_bg2_width = min(bg.get_width() for bg in bg2_images)
 
 # Initialize the right scrolling limit
-#right_scroll_limit = min_bg_width - SCREEN_WIDTH
+bg1_right_scroll_limit = min_bg1_width - SCREEN_WIDTH
+bg2_right_scroll_limit = min_bg2_width - SCREEN_WIDTH
 
 # Load ground image
-#ground_image = pygame.image.load("BG1/ground.png").convert_alpha()
-#ground_width = ground_image.get_width()
-#ground_height = ground_image.get_height()
+bg1_ground_image = pygame.image.load("BG1/ground.png").convert_alpha()
+bg1_ground_width = bg1_ground_image.get_width()
+bg2_ground_image = pygame.image.load("BG2/ground.png").convert_alpha()
+bg2_ground_height = bg2_ground_image.get_height()
 
 # ============================================
 # Section 3: Create New Levels
@@ -121,8 +75,7 @@ def load_level(level_folder):
     return level_image, level_width
 
 # Load BG2 level
-#bg2_image, right_scroll_limit_bg2 = load_level("BG2/IMG_0.png")
-
+#bg2_image, right_scroll_limit_bg2 = load_level("BG2/IMG_1.png")
 
 # ========================================
 # Section 4: Draw Functions and Player
@@ -143,7 +96,7 @@ def draw_bg(current_level):
 # draw ground
 def draw_ground():
     for x in range(5):
-        screen.blit(ground_image, (0, SCREEN_HEIGHT - ground_height))
+        screen.blit(BG1_ground_image, (0, SCREEN_HEIGHT - ground_height))
 
 # Create the player character
 player = player.Character((20, SCREEN_HEIGHT - ground_height - 250))
@@ -153,7 +106,6 @@ player = player.Character((20, SCREEN_HEIGHT - ground_height - 250))
 # ========================================
 
 # Initialize the current level to BG1
-current_level_images = bg_images
 
 # Flag to track if the player is at the lighthouse entrance door
 at_lighthouse_entrance_door = False
@@ -232,7 +184,7 @@ while run:
     # =================================
 
     draw_bg(current_level) # Changed: draw_bg() -> draw_bg(current_level)
-    draw_ground() # Changed: draw_ground() -> draw_ground(current_level)
+    draw_ground()
 
     # Debug test
     print("CHECK")
@@ -259,8 +211,7 @@ while run:
             if at_lighthouse_entrance_door:
                 if event.key == pygame.K_y:
                     # Switch to the new level (BG2)
-                    current_level += 1
-                    switch_level(level_folder[current_level], 0)
+                    switch_level(bg2_image, 0)
                     
                     # Transition to the new level (BG2)
                     #current_level = [bg2_image]
@@ -315,12 +266,6 @@ while run:
     # Draw the player character
     screen.blit(player.image, player.rect)
     pygame.display.update()
-
-# ========================
-# Section 8: Cleanup and Quit
-# ========================
-pygame.quit()
-
 
 # ========================
 # Section 8: Cleanup and Quit
