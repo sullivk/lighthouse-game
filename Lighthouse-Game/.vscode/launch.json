@@ -1,0 +1,12 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "C:\\Users\\conno\\OneDrive - Clemson University\\Desktop\\Python Code Workspace\\2-D Game Engine Design - CPSC 4160\\Milestone 2\\lighthouse-game\\Lighthouse-Game\\Main.py",
+            "console": "integratedTerminal",
+        }
+    ]
+}
