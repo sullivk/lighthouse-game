@@ -4,7 +4,6 @@ import pygame
 
 class Character(pygame.sprite.Sprite):
     def __init__(self, position):
-    
         #load image
         self.sheet = pygame.image.load("spritesheet2.png")
         
@@ -33,7 +32,6 @@ class Character(pygame.sprite.Sprite):
         self.down_states = { 0: (35, 602, self.rectWidth, self.rectHeight) }     
             
         self.up_states = { 0: (35, 602, self.rectWidth, self.rectHeight) }  
-        
          
         self.right_states = { 0: (35, 602, self.rectWidth, self.rectHeight), 
                             1: (0, 0, self.rectWidth,  self.rectHeight), 

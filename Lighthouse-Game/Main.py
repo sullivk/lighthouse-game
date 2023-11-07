@@ -1,5 +1,6 @@
 import pygame
 import player 
+import bird
 
 pygame.init()
 
@@ -11,8 +12,7 @@ SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption("Midterm - Parallax Effect")
-
+pygame.display.set_caption("Lighthouse Game")
 
 #define game variables
 scroll = 0
@@ -20,7 +20,7 @@ scroll = 0
 # Load background images
 bg_images = []
 
-for i in range(4):
+for i in range(3):
     bg_image = pygame.image.load(f"BG1/IMG_{i}.png").convert_alpha()
     bg_images.append(bg_image)
 
@@ -44,7 +44,7 @@ def draw_bg():
     for x in range(2):
         screen.blit(bg_images[x], (int(0 - scroll * speed * 0.25), 0))
         speed += 0.2
-    for y in range(2,4):
+    for y in range(2,3):
         screen.blit(bg_images[y], (int(0 - scroll * speed * 0.5), SCREEN_HEIGHT * 0.5))
 
 #draw background
@@ -52,7 +52,9 @@ def draw_ground():
 	for x in range(5):	
 		screen.blit(ground_image, (0, SCREEN_HEIGHT - ground_height))
 
-player = player.Character((20, SCREEN_HEIGHT - ground_height - 250))
+# Creates entities
+player = player.Character((20, SCREEN_HEIGHT - ground_height + 250))
+bird = bird.Character((1000, 0))
 
 # Game loop
 run = True
@@ -87,6 +89,13 @@ while run:
             end_screen.key = pygame.K_LEFT
         player.handle_event(end_screen)
 
+    bird.update()
+    #print(bird.rect.x)
+    if bird.rect.x > 1000:
+        bird.change_direction()
+    if bird.rect.x < -200:
+        bird.change_direction()
+    screen.blit(bird.image, bird.rect)
     screen.blit(player.image, player.rect)
     
     pygame.display.update()
