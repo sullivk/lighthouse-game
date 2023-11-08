@@ -358,8 +358,3 @@ while run:
 # Section 8: Cleanup and Quit
 # ========================
 pygame.quit()
-
-    
-    pygame.display.update()
-
-pygame.quit()
