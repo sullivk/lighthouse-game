@@ -1,6 +1,9 @@
 import pygame
 import player
-import sys
+import os
+
+file_path = os.path.abspath("Main.py")
+print(file_path)
 
 pygame.init()
 
@@ -23,40 +26,48 @@ pygame.display.set_caption("The Lighthouse - Milestone 2")
 
 # Game variables
 scroll = 0
-current_level_num = 1
-level_folders = ["BG1", "BG2"]
 
 # ============================================
 # Section 2: Load Background Images and Ground
 # ============================================
 
 # Load background images
-bg1_images = []
+bg_images = []
+
+for i in range(4):
+    bg_image = pygame.image.load(f"BG1/background/IMG_{i}.png").convert_alpha()
+    bg_images.append(bg_image)
+
+bg_width = bg_images[0].get_width()
+
+# Calculate the minimum width of background images
+min_bg_width = min(bg.get_width() for bg in bg_images)
+
+# Initialize the right scrolling limit
+right_scroll_limit = min_bg_width - SCREEN_WIDTH
+
+# Load ground image
+ground_image = pygame.image.load("BG1/ground/ground.png").convert_alpha()
+ground_width = ground_image.get_width()
+ground_height = ground_image.get_height()
+#************************************************************************************#
+
+# Load bg2 images
 bg2_images = []
+bg2_image = pygame.image.load(f"BG1/background/IMG_0.png").convert_alpha()
+bg2_images.append(bg2_image)
 
-for i in range(sys.maxsize):
-        bg1_image = pygame.image.load(f"/BG1/background/IMG_{i}.png").convert_alpha()
-        bg1_images.append(bg1_image)
-
-for i in range(sys.maxsize):
-        bg2_image = pygame.image.load(f"/BG2/background/IMG_{i}.png").convert_alpha()
-        bg2_images.append(bg2_image)
-
-bg1_width = bg1_images[0].get_width()
 bg2_width = bg2_images[0].get_width()
 
 # Calculate the minimum width of background images
-min_bg1_width = min(bg.get_width() for bg in bg1_images)
-min_bg2_width = min(bg.get_width() for bg in bg2_images)
+min_bg2_width = min(bg2.get_width() for bg2 in bg2_images)
 
 # Initialize the right scrolling limit
-bg1_right_scroll_limit = min_bg1_width - SCREEN_WIDTH
 bg2_right_scroll_limit = min_bg2_width - SCREEN_WIDTH
 
 # Load ground image
-bg1_ground_image = pygame.image.load("BG1/ground.png").convert_alpha()
-bg1_ground_width = bg1_ground_image.get_width()
-bg2_ground_image = pygame.image.load("BG2/ground.png").convert_alpha()
+bg2_ground_image = pygame.image.load("BG2/ground/ground.png").convert_alpha()
+bg2_ground_width = bg2_ground_image.get_width()
 bg2_ground_height = bg2_ground_image.get_height()
 
 # ============================================
@@ -70,12 +81,13 @@ bg2_ground_height = bg2_ground_image.get_height()
 
 # Function to load a new level
 def load_level(level_folder):
-    level_image = pygame.image.load(level_folder).convert_alpha()
+    ground_image = pygame.image.load(f"{level_folder}/ground/ground.png").convert_alpha()
+    level_image = pygame.image.load(f"{level_folder}/background/IMG_0.png").convert_alpha()
     level_width = level_image.get_width()
-    return level_image, level_width
+    return level_image, level_width, ground_image
 
 # Load BG2 level
-#bg2_image, right_scroll_limit_bg2 = load_level("BG2/IMG_1.png")
+bg2_image, right_scroll_limit_bg2, bg2_ground_image = load_level('BG2')
 
 # ========================================
 # Section 4: Draw Functions and Player
@@ -86,7 +98,7 @@ def draw_bg(current_level):
     global scroll
     speed = 1
     for x in range(2):
-        if x < len(current_level):
+        if x < len(current_level): 
             screen.blit(current_level[x], (int(0 - scroll * speed * 0.25), 0))
         speed += 0.2
     for y in range(2, 4):
@@ -96,7 +108,7 @@ def draw_bg(current_level):
 # draw ground
 def draw_ground():
     for x in range(5):
-        screen.blit(BG1_ground_image, (0, SCREEN_HEIGHT - ground_height))
+        screen.blit(ground_image, (0, SCREEN_HEIGHT - ground_height))
 
 # Create the player character
 player = player.Character((20, SCREEN_HEIGHT - ground_height - 250))
@@ -106,6 +118,7 @@ player = player.Character((20, SCREEN_HEIGHT - ground_height - 250))
 # ========================================
 
 # Initialize the current level to BG1
+current_level = bg_images
 
 # Flag to track if the player is at the lighthouse entrance door
 at_lighthouse_entrance_door = False
