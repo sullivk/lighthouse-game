@@ -53,8 +53,8 @@ def draw_ground():
 		screen.blit(ground_image, (0, SCREEN_HEIGHT - ground_height))
 
 # Creates entities
-player = player.Character((20, SCREEN_HEIGHT - ground_height + 250))
-bird = bird.Character((1000, 0))
+player = player.Character((20, SCREEN_HEIGHT - ground_height + 300))
+bird = bird.Character((1000, 10))
 
 # Game loop
 run = True

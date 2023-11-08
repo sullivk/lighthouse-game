@@ -3,10 +3,10 @@ import pygame
 class Character(pygame.sprite.Sprite):
     def __init__(self, position):
         #super().__init__()
-        self.sheet = pygame.image.load("seagull.png")
+        self.sheet = pygame.image.load("seagull-spritesheet.png")
         
         #defines area of a single sprite of an image
-        self.sheet.set_clip(pygame.Rect(50, 0, 255, 273))
+        self.sheet.set_clip(pygame.Rect(0, 0, 122, 112))
         
         #loads spritesheet images
         self.image = self.sheet.subsurface(self.sheet.get_clip())
@@ -18,42 +18,46 @@ class Character(pygame.sprite.Sprite):
         #variable for looping the frame sequence
         self.frame = 0
         
-        self.rectWidth = 255
-        self.rectHeight = 273
+        self.rectWidth = 122
+        self.rectHeight = 112
 
-        self.down_states = { 0: (50, 32, self.rectWidth, self.rectHeight),
-                            1: (350, 32, self.rectWidth, self.rectHeight)
+        self.down_states = { 0: (0, 0, self.rectWidth, self.rectHeight),
+                            #1: (350, 32, self.rectWidth, self.rectHeight)
                              
                              
                               }     
             
-        self.up_states = { 0: (50, 32, self.rectWidth, self.rectHeight),
-                          1: (350, 32, self.rectWidth, self.rectHeight)
+        self.up_states = { 0: (0, 0, self.rectWidth, self.rectHeight),
+                          #1: (350, 32, self.rectWidth, self.rectHeight)
                            
                            
                             }  
          
-        self.right_states = { 0: (50, 32, self.rectWidth, self.rectHeight), 
-                            1: (350, 32, self.rectWidth, self.rectHeight) 
-                             
+        self.right_states = { 0: (1582, 0, self.rectWidth, self.rectHeight), 
+                            1: (1437, 0, self.rectWidth, self.rectHeight),
+                            2: (1290, 0, self.rectWidth, self.rectHeight),
+                            3: (1142, 0, self.rectWidth, self.rectHeight),
+                            4: (997, 0, self.rectWidth, self.rectHeight),
+                            5: (852, 6, self.rectWidth, self.rectHeight),
+                            6: (1582, 170, self.rectWidth, self.rectHeight),
+                            7: (1437, 170, self.rectWidth, self.rectHeight),
+                            8: (1290, 170, self.rectWidth, self.rectHeight),
+                            9: (1142, 170, self.rectWidth, self.rectHeight),
+                            10: (997, 170, self.rectWidth, self.rectHeight)
                              
                               }
 
-        self.left_states = {  0: (50, 32, self.rectWidth, self.rectHeight), 
-                            1: (350, 32, self.rectWidth, self.rectHeight),
-                            2: (620, 32, self.rectWidth, self.rectHeight),
-                            3: (920, 32, self.rectWidth, self.rectHeight),
-                            4: (1220, 32, self.rectWidth, self.rectHeight), 
-                            5: (1510, 32, self.rectWidth, self.rectHeight),
-                            6: (50, 360, self.rectWidth, self.rectHeight),
-                            7: (350, 360, self.rectWidth, self.rectHeight),
-                            8: (620, 360, self.rectWidth, self.rectHeight),
-                            9: (920, 360, self.rectWidth, self.rectHeight),
-                            10: (1220, 360, self.rectWidth, self.rectHeight)
-                                
-                                
-                                
-                                    }
+        self.left_states = {  0: (0, 0, self.rectWidth, self.rectHeight), 
+                            1: (148, 0, self.rectWidth, self.rectHeight),
+                            2: (298, 0, self.rectWidth, self.rectHeight),
+                            3: (440, 0, self.rectWidth, self.rectHeight),
+                            4: (585, 0, self.rectWidth, self.rectHeight),
+                            5: (730, 12, self.rectWidth, self.rectHeight),
+                            6: (0, 176, self.rectWidth, self.rectHeight),
+                            7: (140, 176, self.rectWidth, self.rectHeight),
+                            8: (285, 176, self.rectWidth, self.rectHeight),
+                            9: (440, 176, self.rectWidth, self.rectHeight),
+                            10: (585, 170, self.rectWidth, self.rectHeight) }
         
         self.rect.topleft = position
         self.velocity_x = 2

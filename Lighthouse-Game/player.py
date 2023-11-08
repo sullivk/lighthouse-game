@@ -5,10 +5,10 @@ import pygame
 class Character(pygame.sprite.Sprite):
     def __init__(self, position):
         #load image
-        self.sheet = pygame.image.load("spritesheet2.png")
+        self.sheet = pygame.image.load("spritesheet1.png")
         
         #defines area of a single sprite of an image
-        self.sheet.set_clip(pygame.Rect(0, 0, 200, 275))
+        self.sheet.set_clip(pygame.Rect(0, 0, 116, 211))
         
         #loads spritesheet images
         self.image = self.sheet.subsurface(self.sheet.get_clip())
@@ -20,8 +20,8 @@ class Character(pygame.sprite.Sprite):
         #variable for looping the frame sequence
         self.frame = 0
         
-        self.rectWidth = 200
-        self.rectHeight = 275
+        self.rectWidth = 114
+        self.rectHeight = 211
 
         # Jump info
         self.is_jumping = False
@@ -33,21 +33,19 @@ class Character(pygame.sprite.Sprite):
             
         self.up_states = { 0: (35, 602, self.rectWidth, self.rectHeight) }  
          
-        self.right_states = { 0: (35, 602, self.rectWidth, self.rectHeight), 
-                            1: (0, 0, self.rectWidth,  self.rectHeight), 
-                            2: (330, 0, self.rectWidth,  self.rectHeight), 
-                            3: (660, 0, self.rectWidth,  self.rectHeight),
-                            4: (990, 0, self.rectWidth,  self.rectHeight),
-                            5: (1315, 0, self.rectWidth, self.rectHeight),
-                            6: (1645, 0, self.rectWidth, self.rectHeight) }
+        self.right_states = { 0: (0, 0, self.rectWidth, self.rectHeight), 
+                            1: (115, 0, self.rectWidth,  self.rectHeight), 
+                            2: (236, 0, self.rectWidth,  self.rectHeight), 
+                            3: (352, 0, self.rectWidth,  self.rectHeight),
 
-        self.left_states = {  0: (256, 602, self.rectWidth, self.rectHeight), 
-                            1: (0, 288, self.rectWidth,  self.rectHeight), 
-                            2: (330, 288, self.rectWidth,  self.rectHeight), 
-                            3: (660, 288, self.rectWidth,  self.rectHeight),
-                            4: (990, 288, self.rectWidth,  self.rectHeight),
-                            5: (1315, 288, self.rectWidth, self.rectHeight),
-                            6: (1645, 288, self.rectWidth, self.rectHeight) }
+                              }
+
+        self.left_states = {  0: (0, 203, self.rectWidth, self.rectHeight), 
+                            1: (125, 203, self.rectWidth,  self.rectHeight), 
+                            2: (240, 203, self.rectWidth,  self.rectHeight), 
+                            3: (350, 203, self.rectWidth,  self.rectHeight),
+                            
+                              }
 
 
     def get_frame(self, frame_set):
@@ -81,18 +79,18 @@ class Character(pygame.sprite.Sprite):
         if direction == 'down':
             self.clip(self.down_states)
             #self.rect.y += 5
-        if self.is_jumping:
-            if self.jump_count >= -10:
-                neg = 1
-                if self.jump_count < 0:
-                    neg = -1
-                new_y = self.rect.y - (self.jump_count ** 2) * 0.5 * neg
-                self.rect.y = new_y
-                self.jump_count -= 1
-            else:
-                self.is_jumping = False
-                self.jump_count = 10
-                self.rect.y = self.ground_level
+        # if self.is_jumping:
+        #     if self.jump_count >= -10:
+        #         neg = 1
+        #         if self.jump_count < 0:
+        #             neg = -1
+        #         new_y = self.rect.y - (self.jump_count ** 2) * 0.5 * neg
+        #         self.rect.y = new_y
+        #         self.jump_count -= 1
+        #     else:
+        #         self.is_jumping = False
+        #         self.jump_count = 10
+        #         self.rect.y = self.ground_level
 
         if direction == 'stand_left':
             self.clip(self.left_states[0])
@@ -113,12 +111,12 @@ class Character(pygame.sprite.Sprite):
                 self.update('left')
             if event.key == pygame.K_RIGHT:
                 self.update('right')
-            if event.key == pygame.K_UP:
-                #self.update('up')
-                if not self.is_jumping:
-                    self.is_jumping = True
-            if event.key == pygame.K_DOWN:
-                self.update('down')
+            # if event.key == pygame.K_UP:
+            #     #self.update('up')
+            #     if not self.is_jumping:
+            #         self.is_jumping = True
+            #if event.key == pygame.K_DOWN:
+                #self.update('down')
 
         if event.type == pygame.KEYUP:
 
@@ -126,7 +124,7 @@ class Character(pygame.sprite.Sprite):
                 self.update('stand_left')
             if event.key == pygame.K_RIGHT:
                 self.update('stand_right')
-            if event.key == pygame.K_UP:
-                self.update('stand_up')
-            if event.key == pygame.K_DOWN:
-                self.update('stand_down')
+            # if event.key == pygame.K_UP:
+            #     self.update('stand_up')
+            #if event.key == pygame.K_DOWN:
+                #self.update('stand_down')
