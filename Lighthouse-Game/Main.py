@@ -14,6 +14,9 @@ pygame.init()
 # Initialize Pygame clock and FPS
 clock = pygame.time.Clock()
 FPS = 60
+ground_image = ""
+ground_width = 0
+ground_height = 0
 
 # Screen dimensions
 SCREEN_WIDTH = 800
@@ -47,14 +50,18 @@ min_bg_width = min(bg.get_width() for bg in bg_images)
 right_scroll_limit = min_bg_width - SCREEN_WIDTH
 
 # Load ground image
-ground_image = pygame.image.load("BG1/ground/ground.png").convert_alpha()
-ground_width = ground_image.get_width()
-ground_height = ground_image.get_height()
+bg1_ground_image = pygame.image.load("BG1/ground/ground.png").convert_alpha()
+bg1_ground_width = bg1_ground_image.get_width()
+bg1_ground_height = bg1_ground_image.get_height()
+
+ground_image = bg1_ground_image
+ground_width = bg1_ground_width
+ground_height = bg1_ground_height
 #************************************************************************************#
 
 # Load bg2 images
 bg2_images = []
-bg2_image = pygame.image.load(f"BG1/background/IMG_0.png").convert_alpha()
+bg2_image = pygame.image.load(f"BG2/background/IMG_0.png").convert_alpha()
 bg2_images.append(bg2_image)
 
 bg2_width = bg2_images[0].get_width()
@@ -88,6 +95,8 @@ def load_level(level_folder):
 
 # Load BG2 level
 bg2_image, right_scroll_limit_bg2, bg2_ground_image = load_level('BG2')
+# Set the ground image to the new level's ground image
+
 
 # ========================================
 # Section 4: Draw Functions and Player
@@ -125,9 +134,14 @@ at_lighthouse_entrance_door = False
 
 # Function to switch between levels
 def switch_level(new_level, new_scroll):
-    global current_level, scroll, at_lighthouse_entrance_door
+    global current_level, scroll, at_lighthouse_entrance_door, ground_image, ground_height, ground_width
     current_level = [new_level]
     scroll = new_scroll
+    if new_level == bg2_image:
+        print("Switching to level 2")
+        ground_image = bg2_ground_image
+        ground_height = bg2_ground_height
+        ground_width = bg2_ground_width
     at_lighthouse_entrance_door = False
     
 # Initialize the arrow position to "Yes" by default
@@ -280,6 +294,10 @@ while run:
     screen.blit(player.image, player.rect)
     pygame.display.update()
 
+# ========================
+# Section 8: Cleanup and Quit
+# ========================
+pygame.quit()
 # ========================
 # Section 8: Cleanup and Quit
 # ========================
