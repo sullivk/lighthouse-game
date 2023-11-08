@@ -89,8 +89,6 @@ bg2_ground_height = bg2_ground_image.get_height()
 # ============================================
 # Section 3: Create New Levels
 # ============================================
-
-
 # Function to load a new level
 def load_level(level_folder):
     ground_image = pygame.image.load(
@@ -105,8 +103,6 @@ def load_level(level_folder):
 
 # Load BG2 level
 bg2_image, bg2_right_scroll_limit, bg2_ground_image = load_level("BG2")
-# Set the ground image to the new level's ground image
-
 
 # ========================================
 # Section 4: Draw Functions and Player
