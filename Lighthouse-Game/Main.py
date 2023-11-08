@@ -1,9 +1,7 @@
 import pygame
 import player
 import os
-
-file_path = os.path.abspath("Main.py")
-print(file_path)
+import bird
 
 pygame.init()
 
@@ -89,6 +87,8 @@ bg2_ground_height = bg2_ground_image.get_height()
 # ============================================
 # Section 3: Create New Levels
 # ============================================
+
+
 # Function to load a new level
 def load_level(level_folder):
     ground_image = pygame.image.load(
@@ -103,6 +103,8 @@ def load_level(level_folder):
 
 # Load BG2 level
 bg2_image, bg2_right_scroll_limit, bg2_ground_image = load_level("BG2")
+# Set the ground image to the new level's ground image
+
 
 # ========================================
 # Section 4: Draw Functions and Player
@@ -131,7 +133,9 @@ def draw_ground():
 
 
 # Create the player character
-player = player.Character((20, SCREEN_HEIGHT - ground_height - 250))
+#player = player.Character((20, SCREEN_HEIGHT - ground_height - 250))
+player = player.Character((20, SCREEN_HEIGHT - ground_height + 300))
+bird = bird.Character((1000, 10))
 
 # ========================================
 # Section 5: Main Game Loop and Logic
@@ -181,7 +185,6 @@ def switch_level(new_level, new_scroll):
 
 # Initialize the arrow position to "Yes" by default
 arrow_position = "Yes"
-
 
 # Function to display the custom Pokemon-style prompt
 def display_pokemon_style_prompt(arrow_position):
@@ -266,7 +269,7 @@ while run:
 
     # Input data. Left and right keys to create the parallax effect
     key = pygame.key.get_pressed()
-    if key[pygame.K_LEFT] and scroll > left_scroll_limit:
+    if key[pygame.K_LEFT] and scroll > left_scroll_limit: #changed from 0
         scroll -= 5
     if key[pygame.K_RIGHT] and scroll < right_scroll_limit:
         scroll += 5
@@ -302,6 +305,8 @@ while run:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 run = False
+            
+            #key = pygame.key.get_pressed()
             if at_lighthouse_entrance_door:
                 if event.key == pygame.K_y:
                     display_prompt = False
@@ -337,6 +342,14 @@ while run:
                     arrow_position = "Yes"
                 elif event.key == pygame.K_DOWN:
                     arrow_position = "No"
+                    
+    bird.update()
+    #print(bird.rect.x)
+    if bird.rect.x > 1000:
+        bird.change_direction()
+    if bird.rect.x < -200:
+        bird.change_direction()
+    screen.blit(bird.image, bird.rect)
 
     # Draw the player character
     screen.blit(player.image, player.rect)
@@ -346,3 +359,4 @@ while run:
 # Section 8: Cleanup and Quit
 # ========================
 pygame.quit()
+
