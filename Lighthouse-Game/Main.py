@@ -30,6 +30,18 @@ SCREEN_HEIGHT = 600
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("The Lighthouse - Milestone 3")
 
+# ============================================
+#                     HUD
+# ============================================
+# Health Bar
+# Character health
+max_health = 5
+current_health = max_health
+
+# Load heart image
+heart_image = pygame.image.load('HUD/heart.png')  # Replace 'heart.png' with your heart image
+heart_image = pygame.transform.scale(heart_image, (30, 30))
+# ============================================
 
 # ============================================
 # Section 2: Load Background Images and Ground
@@ -292,6 +304,10 @@ while run:
     screen.blit(bg_images[0], (scroll, 0))
     screen.blit(bg_images[1], (scroll * .25, 0))
     screen.blit(ground_image, (scroll, SCREEN_HEIGHT - ground_height))
+    
+    # Draw the health bar
+    for i in range(current_health):
+        screen.blit(heart_image, (10 + i * 40, pygame.display.get_surface().get_height() - 40))
 
     bird.update()
     bird.detect_player_proximity(player)
