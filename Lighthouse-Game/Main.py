@@ -40,7 +40,9 @@ current_health = max_health
 
 # Load heart image
 heart_image = pygame.image.load('HUD/heart.png')
+empty_heart_image = pygame.image.load('HUD/empty_heart.png') #Added
 heart_image = pygame.transform.scale(heart_image, (30, 30))
+empty_heart_image = pygame.transform.scale(empty_heart_image, (30, 30)) #Added
 # ============================================
 
 # ============================================
@@ -317,8 +319,11 @@ while run:
         #bird.is_attacking = False
 
     # Draw the health bar
-    for i in range(current_health):
-        screen.blit(heart_image, (10 + i * 40, pygame.display.get_surface().get_height() - 40))
+    for i in range(max_health):
+        if i < current_health:
+            screen.blit(heart_image, (10 + i * 40, SCREEN_HEIGHT - 40))
+        else:
+            screen.blit(empty_heart_image, (10 + i * 40, SCREEN_HEIGHT - 40))
 
     bird.update()
     bird.detect_player_proximity(player)
