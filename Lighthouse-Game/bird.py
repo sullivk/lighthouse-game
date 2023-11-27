@@ -1,5 +1,6 @@
 import pygame
 import math
+import player
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -129,7 +130,11 @@ class Character(pygame.sprite.Sprite):
 
         else:
             # Attacks the player
-            self.attack_player()
+            if (player.Character.alive):
+                self.attack_player()
+            else:
+                self.is_attacking = False
+                self.is_returning = False   
 
     # Changes the horizontal direction of the bird
     def change_direction(self):
@@ -138,6 +143,8 @@ class Character(pygame.sprite.Sprite):
 
     # Detects how close the bird is to the player
     def detect_player_proximity(self, player):
+        # if not player.alive:
+        #     return
         player_x, player_y = player.rect.center
         bird_x, bird_y = self.rect.center
         
@@ -153,6 +160,8 @@ class Character(pygame.sprite.Sprite):
 
     # Attacks the player if the bird gets close
     def attack_player(self):
+        if not player.Character.alive:
+            return
         self.current_states = self.right_states if self.direction == 1 else self.left_states
         self.frame_index = (self.frame_index + 1) % len(self.current_states)
         self.image = self.sheet.subsurface(self.current_states[self.frame_index]) 
@@ -188,7 +197,7 @@ class Character(pygame.sprite.Sprite):
                 self.rect.x += dx * self.attack_speed
                 self.rect.y += dy * self.attack_speed
             else:
-                # Returns to original f;ying height
+                # Returns to original flying height
                 self.rect.y -= self.attack_speed
                 if self.rect.y <= self.original_height:
                     self.rect.y = self.original_height

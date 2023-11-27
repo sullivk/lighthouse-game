@@ -43,6 +43,10 @@ class Character(pygame.sprite.Sprite):
         self.invulnerable = False
         self.invulnerability_duration = 1000
         self.last_damage_time = 0
+        self.alive = True
+        self.fall_speed = 1
+        self.fallen_distance = 0
+        self.fall_limit = 1
 
         # Jump info
         self.is_jumping = False
@@ -87,69 +91,43 @@ class Character(pygame.sprite.Sprite):
             self.sheet.set_clip(pygame.Rect(clipped_rect))
         return clipped_rect
 
-    # Updates the player
-    # def update(self, direction):
-    #     self.calculate_gravity()
-    #     if self.is_jumping:
-    #         # Handle jumping
-    #         self.change_y += 0.35
-    #         if self.rect.y >= self.ground_level:
-    #             self.is_jumping = False
-    #             self.change_y = 0
-    #             self.rect.y = self.ground_level
- 
-    #     # Moves left/right
-    #     self.rect.x += self.change_x
- 
-    #     if self.change_x > 0:
-    #         self.clip(self.right_states)
-    #     elif self.change_x < 0:
-    #         self.clip(self.left_states)
- 
-    #     # Moves up/down
-    #     self.rect.y += self.change_y
- 
-    #     self.image = self.sheet.subsurface(self.sheet.get_clip())
     def update(self, direction):
         self.calculate_gravity()
-        
-        # Handles jumping
-        if self.is_jumping:
-            self.change_y += 0.35
-            if self.rect.y >= self.ground_level:
-                self.is_jumping = False
-                self.change_y = 0
-                self.rect.y = self.ground_level
+        if not self.alive and self.rect.y >= self.ground_level:
+            self.change_y = 0
+            self.rect.y = self.ground_level + 200
+            return
+        else: 
+            # Handles jumping
+            if self.is_jumping:
+                self.change_y += 0.35
+                if self.rect.y >= self.ground_level:
+                    self.is_jumping = False
+                    self.change_y = 0
+                    self.rect.y = self.ground_level
 
-        # Updates sprite position
-        self.rect.x += self.change_x
-        self.rect.y += self.change_y
+            # Updates sprite position
+            self.rect.x += self.change_x
+            self.rect.y += self.change_y
 
-        # Updates the sprite image based on direction and ensure the animation frame rate is controlled
-        current_time = pygame.time.get_ticks()
-        if current_time - self.last_frame_time > self.frame_delay:
-            self.frame_index = (self.frame_index + 1) % len(self.right_states)  # assuming right_states has the frames for animation
-            self.last_frame_time = current_time
-            if self.change_x > 0:
-                self.clip(self.right_states)
-            elif self.change_x < 0:
-                self.clip(self.left_states)
+            # Updates the sprite image based on direction and ensure the animation frame rate is controlled
+            current_time = pygame.time.get_ticks()
+            if current_time - self.last_frame_time > self.frame_delay:
+                self.frame_index = (self.frame_index + 1) % len(self.right_states)
+                self.last_frame_time = current_time
+                if self.change_x > 0:
+                    self.clip(self.right_states)
+                elif self.change_x < 0:
+                    self.clip(self.left_states)
 
-            self.image = self.sheet.subsurface(self.sheet.get_clip())
+                self.image = self.sheet.subsurface(self.sheet.get_clip())
 
     # Causes the player to take damage
     def take_damage(self):
-        # if self.health > 0 and not self.invulnerable:
-        #     self.invulnerable = True
-        #     self.health -= 1
-        #     print(self.health)
-        #     self.last_damage_time = pygame.time.get_ticks()
-        #     if self.health <= 0:
-        #         self.die()
         if self.health > 0 and not self.invulnerable:
             self.invulnerable = True
             self.health -= 1
-            print(self.health)
+            #print(self.health)
             self.last_damage_time = pygame.time.get_ticks()
             if self.health <= 0:
                 self.die()
@@ -157,6 +135,11 @@ class Character(pygame.sprite.Sprite):
     # Causes the player to die
     def die(self):
         # Handles player death (menu stuff?)
+        self.alive = False
+        self.stop()
+        self.image = pygame.transform.rotate(self.sheet.subsurface(self.sheet.get_clip()), 270)
+        # self.change_y = 0
+        # self.rect.y = self.ground_level + 200
         print("rip bozo")
         print("rip bozo")
         print("rip bozo")

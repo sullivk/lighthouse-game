@@ -277,12 +277,13 @@ while run:
         if event.type == pygame.QUIT:
             run = False
         elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_LEFT:
-                player.go_left(scroll)
-            elif event.key == pygame.K_RIGHT:
-                player.go_right(scroll)
-            elif event.key == pygame.K_UP:
-                player.jump()
+            if (player.alive):
+                if event.key == pygame.K_LEFT:
+                    player.go_left(scroll)
+                elif event.key == pygame.K_RIGHT:
+                    player.go_right(scroll)
+                elif event.key == pygame.K_UP:
+                    player.jump()
         elif event.type == pygame.KEYUP:
             if event.key in (pygame.K_LEFT, pygame.K_RIGHT):
                 player.stop()   
@@ -295,7 +296,7 @@ while run:
     player.update(player_start)
     if player.change_x != 0:
         scroll -= (player.change_x * 5)
-    print(f"Player X: {player.rect.x}, Change X: {player.change_x}, Scroll: {scroll}")
+    print(f"Player X: {player.rect.x}, Change X: {player.change_x}, Scroll: {scroll}, Change Y: {player.change_y}")
 
     # Limits the scrolling to the size of the ground image
     scroll = max(min(0, scroll), SCREEN_WIDTH - ground_image.get_width())
@@ -310,11 +311,10 @@ while run:
         player.invulnerable = False
 
     # Check for collision between bird and player
-    if pygame.sprite.collide_rect(bird, player) and not player.invulnerable:
-        player.take_damage()
-        #current_health -= 1
-        current_health = player.health
-        #bird.is_attacking = False
+    if (player.alive):
+        if pygame.sprite.collide_rect(bird, player) and not player.invulnerable:
+            player.take_damage()
+            current_health = player.health
 
     # Draw the health bar
     for i in range(current_health):
