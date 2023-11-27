@@ -1,3 +1,4 @@
+import math
 import pygame
 
 class Character(pygame.sprite.Sprite):
@@ -20,6 +21,7 @@ class Character(pygame.sprite.Sprite):
         
         self.rectWidth = 122
         self.rectHeight = 112
+        self.original_height = position[1]
 
         self.down_states = { 0: (0, 0, self.rectWidth, self.rectHeight),
                             #1: (350, 32, self.rectWidth, self.rectHeight)
@@ -67,6 +69,11 @@ class Character(pygame.sprite.Sprite):
         self.frame_index = 0
         self.frame_delay = 100
 
+        #attack stuff
+        self.is_attacking = False
+        self.attack_speed = 5
+        self.attack_target = None
+
     def get_frame(self, frame_set):
         #looping the sprite sequences.
         self.frame += 1
@@ -99,18 +106,50 @@ class Character(pygame.sprite.Sprite):
                 self.frame_index = 0
             self.image = self.sheet.subsurface(self.current_states[self.frame_index])
 
+        else:
+            # Seagull is attacking
+            self.attack_player()
+
     def change_direction(self):
         self.direction *= -1
-        print("changed direction")
+        #print("Bird changed direction")
 
     def detect_player_proximity(self, player):
-        if pygame.sprite.collide_rect(self, player):
+        player_x, player_y = player.rect.center
+        bird_x, bird_y = self.rect.center
+        
+        # Adjust this threshold as needed to control when the bird attacks
+        attack_threshold = 1
+        
+        if bird_y < player_y - attack_threshold:
             self.is_attacking = True
+            self.attack_target = player
+            print("Bird is above the player")
 
-    def attack_player(self, player):
-        if self.is_attacking:
-            # Implement dive bomb
-            if self.rect.x < player.rect.x:
-                self.rect.x += self.velocity * 2
-            else:
+    def attack_player(self):
+        if self.is_attacking and self.attack_target:
+            player_x, player_y = self.attack_target.rect.center
+            seagull_x, seagull_y = self.rect.center
+
+            # Calculate the direction vector from the seagull to the player
+            dx = player_x - seagull_x
+            dy = player_y - seagull_y
+            distance = math.sqrt(dx ** 2 + dy ** 2)
+
+            # Normalize the direction vector
+            if distance > 0:
+                dx /= distance
+                dy /= distance
+
+            # Adjust the seagull's position based on the direction vector
+            self.rect.x += dx * self.attack_speed
+            self.rect.y += dy * self.attack_speed
+
+            # Check if the seagull has reached the player's position
+            if abs(self.rect.x - player_x) < self.attack_speed and abs(self.rect.y - player_y) < self.attack_speed:
+                self.is_attacking = False
+
+            # Check if the seagull has returned to its original height
+            if self.rect.y <= self.original_height:
+                self.rect.y = self.original_height
                 self.is_attacking = False
