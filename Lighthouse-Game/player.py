@@ -138,8 +138,6 @@ class Character(pygame.sprite.Sprite):
         self.alive = False
         self.stop()
         self.image = pygame.transform.rotate(self.sheet.subsurface(self.sheet.get_clip()), 270)
-        # self.change_y = 0
-        # self.rect.y = self.ground_level + 200
         print("rip bozo")
         print("rip bozo")
         print("rip bozo")

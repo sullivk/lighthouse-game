@@ -275,6 +275,7 @@ while run:
     draw_bg(current_level)  # Changed: draw_bg() -> draw_bg(current_level)
     draw_ground()
     
+    # Handles user input
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
@@ -295,6 +296,7 @@ while run:
 
     key = pygame.key.get_pressed()
 
+    # Updates the player
     player.update(player_start)
     if player.change_x != 0:
         scroll -= (player.change_x * 5)
@@ -308,23 +310,24 @@ while run:
     screen.blit(bg_images[1], (scroll * .25, 0))
     screen.blit(ground_image, (scroll, SCREEN_HEIGHT - ground_height))
 
-    #
+    # Checks if the player has been attacked recently
     if player.invulnerable and (pygame.time.get_ticks() - player.last_damage_time > player.invulnerability_duration):
         player.invulnerable = False
 
-    # Check for collision between bird and player
+    # Checks for collision between bird and player
     if (player.alive):
         if pygame.sprite.collide_rect(bird, player) and not player.invulnerable:
             player.take_damage()
             current_health = player.health
 
-    # Draw the health bar
+    # Draws the health bar
     for i in range(max_health):
         if i < current_health:
             screen.blit(heart_image, (10 + i * 40, SCREEN_HEIGHT - 40))
         else:
             screen.blit(empty_heart_image, (10 + i * 40, SCREEN_HEIGHT - 40))
 
+    # Updates the bird
     bird.update()
     bird.detect_player_proximity(player)
     if bird.rect.x > 1000:
