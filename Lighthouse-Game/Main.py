@@ -65,18 +65,6 @@ while run:
     draw_bg()
     draw_ground()
     
-    # Input data. Left and right keys to create the parallax effect
-    # key = pygame.key.get_pressed()
-    # if key[pygame.K_LEFT] and scroll > 0:
-    #     scroll -= 5
-    # if key[pygame.K_RIGHT] and scroll < right_scroll_limit:
-    #     scroll += 5
-    # for event in pygame.event.get():
-    #     if event.type == pygame.QUIT:
-    #         run = False
-    # if event.type == pygame.KEYDOWN:
-    #         if event.key == pygame.K_ESCAPE:
-    #             run = False
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
@@ -96,45 +84,13 @@ while run:
 
     key = pygame.key.get_pressed()
 
-    # if scroll > 0 and scroll < right_scroll_limit: 
-    #     #player.handle_event(event)
-    #     PLAYER_SPEED = 6
-    # else: 
-    #     end_screen = pygame.event.Event(pygame.KEYUP)
-    #     if scroll == 0: 
-    #         end_screen.key = pygame.K_RIGHT
-    #     else:
-    #         end_screen.key = pygame.K_LEFT
-    #     player.handle_event(end_screen)
-
     player.update(player_start)
     if player.change_x != 0:
         scroll -= (player.change_x * 5)
     print(f"Player X: {player.rect.x}, Change X: {player.change_x}, Scroll: {scroll}")
 
-    # #scroll = min(0, SCREEN_WIDTH // 2 - player.rect.centerx)
-    # if player.change_x < 0 and player.rect.x < SCREEN_WIDTH // 2 and scroll < 0:
-    #     #scroll += PLAYER_SPEED
-    #     scroll += player.change_x
-    # elif player.change_x > 0 and player.rect.x > SCREEN_WIDTH // 2 and scroll > right_scroll_limit:
-    #     #scroll -= PLAYER_SPEED
-    #     scroll -= player.change_x
-
-
-    # if player.change_x < 0 and scroll < 0:
-    #     scroll += PLAYER_SPEED
-    # elif player.change_x > 0 and scroll > right_scroll_limit:
-    #     scroll -= PLAYER_SPEED
-
     # # Limit scrolling to the size of the ground image
     scroll = max(min(0, scroll), SCREEN_WIDTH - ground_image.get_width())
-
-
-    # if player.change_x < 0 and player.rect.centerx < SCREEN_WIDTH // 2:
-    #     scroll = min(scroll + PLAYER_SPEED, 0)
-    # elif player.change_x > 0 and player.rect.centerx > SCREEN_WIDTH // 2:
-    #     scroll = max(scroll - PLAYER_SPEED, SCREEN_WIDTH - ground_image.get_width())
-
 
     # Draw the background, clouds, and ground at the new position
     screen.blit(bg_images[0], (scroll, 0))
