@@ -305,6 +305,17 @@ while run:
     screen.blit(bg_images[1], (scroll * .25, 0))
     screen.blit(ground_image, (scroll, SCREEN_HEIGHT - ground_height))
 
+    #
+    if player.invulnerable and (pygame.time.get_ticks() - player.last_damage_time > player.invulnerability_duration):
+        player.invulnerable = False
+
+    # Check for collision between bird and player
+    if pygame.sprite.collide_rect(bird, player) and not player.invulnerable:
+        player.take_damage()
+        #current_health -= 1
+        current_health = player.health
+        #bird.is_attacking = False
+
     # Draw the health bar
     for i in range(current_health):
         screen.blit(heart_image, (10 + i * 40, pygame.display.get_surface().get_height() - 40))

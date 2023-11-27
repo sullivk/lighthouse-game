@@ -39,6 +39,10 @@ class Character(pygame.sprite.Sprite):
         self.last_frame_time = pygame.time.get_ticks()
         self.frame_delay = 60
         self.frame_index = 0
+        self.health = 5
+        self.invulnerable = False
+        self.invulnerability_duration = 1000
+        self.last_damage_time = 0
 
         # Jump info
         self.is_jumping = False
@@ -107,10 +111,9 @@ class Character(pygame.sprite.Sprite):
  
     #     self.image = self.sheet.subsurface(self.sheet.get_clip())
     def update(self, direction):
-        # Calculate gravity effect
         self.calculate_gravity()
-
-        # Handle jumping
+        
+        # Handles jumping
         if self.is_jumping:
             self.change_y += 0.35
             if self.rect.y >= self.ground_level:
@@ -118,11 +121,11 @@ class Character(pygame.sprite.Sprite):
                 self.change_y = 0
                 self.rect.y = self.ground_level
 
-        # Update sprite position
+        # Updates sprite position
         self.rect.x += self.change_x
         self.rect.y += self.change_y
 
-        # Update the sprite image based on direction and ensure the animation frame rate is controlled
+        # Updates the sprite image based on direction and ensure the animation frame rate is controlled
         current_time = pygame.time.get_ticks()
         if current_time - self.last_frame_time > self.frame_delay:
             self.frame_index = (self.frame_index + 1) % len(self.right_states)  # assuming right_states has the frames for animation
@@ -133,6 +136,30 @@ class Character(pygame.sprite.Sprite):
                 self.clip(self.left_states)
 
             self.image = self.sheet.subsurface(self.sheet.get_clip())
+
+    # Causes the player to take damage
+    def take_damage(self):
+        # if self.health > 0 and not self.invulnerable:
+        #     self.invulnerable = True
+        #     self.health -= 1
+        #     print(self.health)
+        #     self.last_damage_time = pygame.time.get_ticks()
+        #     if self.health <= 0:
+        #         self.die()
+        if self.health > 0 and not self.invulnerable:
+            self.invulnerable = True
+            self.health -= 1
+            print(self.health)
+            self.last_damage_time = pygame.time.get_ticks()
+            if self.health <= 0:
+                self.die()
+
+    # Causes the player to die
+    def die(self):
+        # Handles player death (menu stuff?)
+        print("rip bozo")
+        print("rip bozo")
+        print("rip bozo")
 
     # Calculates gravity
     def calculate_gravity(self):
@@ -175,7 +202,6 @@ class Character(pygame.sprite.Sprite):
     def handle_event(self, event):
 
         if event.type == pygame.KEYDOWN:
-
             if event.key == pygame.K_LEFT:
                 #self.rect.x -= self.speed
                 #self.update('left')
@@ -192,7 +218,6 @@ class Character(pygame.sprite.Sprite):
                 self.update('down')
 
         if event.type == pygame.KEYUP:
-
             if event.key == pygame.K_LEFT:
                 self.update('stand_left')
             if event.key == pygame.K_RIGHT:
