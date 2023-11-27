@@ -28,7 +28,7 @@ SCREEN_HEIGHT = 600
 
 # Create the game window
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption("The Lighthouse - Milestone 2")
+pygame.display.set_caption("The Lighthouse - Milestone 3")
 
 
 # ============================================
