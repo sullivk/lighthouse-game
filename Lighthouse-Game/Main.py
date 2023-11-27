@@ -33,21 +33,23 @@ pygame.display.set_caption("The Lighthouse - Milestone 3")
 # ============================================
 #                     HUD
 # ============================================
-# Health Bar
+#                  Health Bar
 # Character health
 max_health = 5
 current_health = max_health
 
 # Load heart image
-heart_image = pygame.image.load('HUD/heart.png')  # Replace 'heart.png' with your heart image
+heart_image = pygame.image.load('HUD/heart.png')
+empty_heart_image = pygame.image.load('HUD/empty_heart.png')
 heart_image = pygame.transform.scale(heart_image, (30, 30))
+empty_heart_image = pygame.transform.scale(empty_heart_image, (30, 30))
 # ============================================
 
 # ============================================
 # Section 2: Load Background Images and Ground
 # ============================================
 
-# Load background images
+# Loads background images
 bg_images = []
 
 for i in range(3):
@@ -56,14 +58,14 @@ for i in range(3):
 
 bg_width = bg_images[0].get_width()
 
-# Calculate the minimum width of background images
+# Calculates the minimum width of background images
 min_bg_width = min(bg.get_width() for bg in bg_images)
 
-# Initialize the right scrolling limit
+# Initializes the right scrolling limit
 bg1_right_scroll_limit = min_bg_width - SCREEN_WIDTH
 bg1_left_scroll_limit = 0
 
-# Load ground image
+# Loads ground image
 bg1_ground_image = pygame.image.load("BG1/ground/ground.png").convert_alpha()
 bg1_ground_width = bg1_ground_image.get_width()
 bg1_ground_height = bg1_ground_image.get_height()
@@ -75,20 +77,20 @@ ground_height = bg1_ground_height
 right_scroll_limit = bg1_right_scroll_limit
 # ************************************************************************************#
 
-# Load bg2 images
+# Loads bg2 images
 bg2_images = []
 bg2_image = pygame.image.load(f"BG2/background/IMG_0.png").convert_alpha()
 bg2_images.append(bg2_image)
 
 bg2_width = bg2_images[0].get_width()
 
-# Calculate the minimum width of background images
+# Calculates the minimum width of background images
 min_bg2_width = min(bg2.get_width() for bg2 in bg2_images)
 
-# Initialize the right scrolling limit
+# Initializes the right scrolling limit
 bg2_right_scroll_limit = min_bg2_width - SCREEN_WIDTH
 
-# Load ground image
+# Loads ground image
 bg2_ground_image = pygame.image.load("BG2/ground/ground.png").convert_alpha()
 bg2_ground_width = bg2_ground_image.get_width()
 bg2_ground_height = bg2_ground_image.get_height()
@@ -106,7 +108,7 @@ def load_level(level_folder):
     return level_image, level_width, ground_image
 
 
-# Load BG2 level
+# Loads BG2 level
 bg2_image, bg2_right_scroll_limit, bg2_ground_image = load_level("BG2")
 # Set the ground image to the new level's ground image
 
@@ -116,7 +118,7 @@ bg2_image, bg2_right_scroll_limit, bg2_ground_image = load_level("BG2")
 # ========================================
 
 
-# draw background images
+# Draws the background images
 def draw_bg(current_level):
     global scroll
     speed = 1
@@ -129,7 +131,7 @@ def draw_bg(current_level):
             screen.blit(current_level[y], (int(0 - scroll * speed * 0.5), SCREEN_HEIGHT * 0.5))
 
 
-# draw ground
+# Draws the ground
 def draw_ground():
     for x in range(5):
         screen.blit(ground_image, (0, SCREEN_HEIGHT - ground_height))
@@ -137,7 +139,7 @@ def draw_ground():
 # Creates entities
 player_start = (20, SCREEN_HEIGHT - ground_height + 300)
 player = player.Character(player_start, ground_width)
-bird = bird.Character((1000, 10))
+bird = bird.Character((500, 10))
 PLAYER_SPEED = 6
 scroll = 0
 
@@ -145,13 +147,13 @@ scroll = 0
 # Section 5: Main Game Loop and Logic
 # ========================================
 
-# Initialize the current level to BG1
+# Initializes the current level to BG1
 current_level = bg_images
 
 # Flag to track if the player is at the lighthouse entrance door
 at_lighthouse_entrance_door = False
 
-
+# Resets the player's position
 def reset_player_position():
     # Set the player's x position to be inside the lighthouse
     player.rect.x = 20
@@ -187,7 +189,7 @@ def switch_level(new_level, new_scroll):
         reset_player_position()
 
 
-# Initialize the arrow position to "Yes" by default
+# Initializes the arrow position to "Yes" by default
 arrow_position = "Yes"
 
 # Function to display the custom Pokemon-style prompt
@@ -217,24 +219,24 @@ def display_pokemon_style_prompt(arrow_position):
                 "Do you want to exit the lighthouse? (Y/N)", True, (0, 0, 0)
             )  # Text color (black)
 
-        # Position the text in the center of the dialogue box
+        # Positions the text in the center of the dialogue box
         text_rect = prompt_text.get_rect(center=(200, 50))
 
-        # Display the dialogue box with the text
+        # Displays the dialogue box with the text
         prompt_bg.blit(prompt_text, text_rect)
 
-        # Create a custom font for the selected option
+        # Creates a custom font for the selected option
         selected_option_font = pygame.font.Font(None, 36)
 
-        # Define Unicode arrow characters
+        # Defines Unicode arrow characters
         arrow_yes = "\u25B6"  # Right arrow
         arrow_no = "\u25B2"  # Up arrow
 
-        # Define text for "Yes" and "No" options with arrow
+        # Defines text for "Yes" and "No" options with arrow
         text_yes = f"{arrow_yes} Yes"
         text_no = f"{arrow_no} No"
 
-        # Render and display the selected option with the arrow
+        # Renders and displays the selected option with the arrow
         if arrow_position == "Yes":
             selected_text = selected_option_font.render(text_yes, True, (0, 0, 0))
         elif arrow_position == "No":
@@ -242,9 +244,9 @@ def display_pokemon_style_prompt(arrow_position):
 
         selected_rect = selected_text.get_rect(
             center=(200, 110)
-        )  # Position the selected text
+        )  # Positions the selected text
 
-        # Render and display the other option without the arrow
+        # Renders and display the other option without the arrow
         if arrow_position == "Yes":
             other_text = prompt_font.render("No", True, (0, 0, 0))
         elif arrow_position == "No":
@@ -252,13 +254,13 @@ def display_pokemon_style_prompt(arrow_position):
 
         other_rect = other_text.get_rect(center=(200, 140))  # Position the other text
 
-        # Display the selected and other options
+        # Displays the selected and other options
         prompt_bg.blit(selected_text, selected_rect)
         prompt_bg.blit(other_text, other_rect)
 
         screen.blit(prompt_bg, (200, 450))
 
-# Initialize variables to track key states
+# Initializes variables to track key states
 left_key_pressed = False
 right_key_pressed = False
 
@@ -297,27 +299,40 @@ while run:
         scroll -= (player.change_x * 5)
     print(f"Player X: {player.rect.x}, Change X: {player.change_x}, Scroll: {scroll}")
 
-    # # Limit scrolling to the size of the ground image
+    # Limits the scrolling to the size of the ground image
     scroll = max(min(0, scroll), SCREEN_WIDTH - ground_image.get_width())
 
-    # Draw the background, clouds, and ground at the new position
+    # Draws the background, clouds, and ground at the new position
     screen.blit(bg_images[0], (scroll, 0))
     screen.blit(bg_images[1], (scroll * .25, 0))
     screen.blit(ground_image, (scroll, SCREEN_HEIGHT - ground_height))
-    
+
+    #
+    if player.invulnerable and (pygame.time.get_ticks() - player.last_damage_time > player.invulnerability_duration):
+        player.invulnerable = False
+
+    # Check for collision between bird and player
+    if pygame.sprite.collide_rect(bird, player) and not player.invulnerable:
+        player.take_damage()
+        #current_health -= 1
+        current_health = player.health
+        #bird.is_attacking = False
+
     # Draw the health bar
-    for i in range(current_health):
-        screen.blit(heart_image, (10 + i * 40, pygame.display.get_surface().get_height() - 40))
+    for i in range(max_health):
+        if i < current_health:
+            screen.blit(heart_image, (10 + i * 40, SCREEN_HEIGHT - 40))
+        else:
+            screen.blit(empty_heart_image, (10 + i * 40, SCREEN_HEIGHT - 40))
 
     bird.update()
     bird.detect_player_proximity(player)
-    #print(bird.rect.x)
     if bird.rect.x > 1000:
         bird.change_direction()
     if bird.rect.x < -200:
         bird.change_direction()
         
-    # Draw the player character
+    # Draws the player character
     screen.blit(player.image, player.rect)
     screen.blit(bird.image, bird.rect)
     pygame.display.update()
