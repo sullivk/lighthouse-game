@@ -112,7 +112,7 @@ def load_level(level_folder):
 
 
 # Loads BG2 level
-bg2_image, bg2_right_scroll_limit, bg2_ground_image = load_level("BG2")
+#bg2_image, bg2_right_scroll_limit, bg2_ground_image = load_level("BG2")
 # Set the ground image to the new level's ground image
 
 
@@ -140,7 +140,10 @@ def draw_ground():
         screen.blit(ground_image, (0, SCREEN_HEIGHT - ground_height))
 
 # Creates entities
-player_start = (20, SCREEN_HEIGHT - ground_height + 300)
+if is_level_1:
+    player_start = (20, SCREEN_HEIGHT - ground_height + 300)
+elif is_level_2:
+    player_start = (20, SCREEN_HEIGHT - ground_height)
 player = player.Character(player_start, ground_width)
 bird = bird.Character((500, 10))
 PLAYER_SPEED = 6
@@ -158,10 +161,14 @@ at_lighthouse_entrance_door = False
 
 # Resets the player's position
 def reset_player_position():
-    # Set the player's x position to be inside the lighthouse
-    player.rect.x = 20
-    # Set the player's y position to the ground inside the lighthouse
-    player.rect.y = SCREEN_HEIGHT - ground_height - player.rect.height - 10
+    if is_level_1:
+        player.rect.x = 630
+    elif is_level_2:
+        # Set the player's x position to be inside the lighthouse
+        player.rect.x = 20
+        player.rect.y = 40
+        # Set the player's y position to the ground inside the lighthouse
+        #player.rect.y = SCREEN_HEIGHT - ground_height - player.rect.height - 20
 
 
 # Function to switch between levels
@@ -181,11 +188,13 @@ def switch_level(new_level, new_scroll):
         ground_image = bg2_ground_image
         ground_height = bg2_ground_height
         ground_width = bg2_ground_width
-        level_image = bg2_images
+        level_image = bg2_image
         #level_width = level_image.get_width()
         at_lighthouse_entrance_door = False
-        scroll = new_scroll
+        #scroll = new_scroll
         #load_level("BG2")
+        print(f"is_level_1: {is_level_1}, is_level_2: {is_level_2}")
+        print(f"new_level: {new_level}, new_scroll: {new_scroll}")
         reset_player_position()  # Reset player's position inside the lighthouse
     else:
         scroll = new_scroll
@@ -207,13 +216,28 @@ def display_text_prompt():
     
     if display_prompt == True:
         # Create a custom dialogue box background
-        prompt_bg = pygame.Surface((400, 150))
-        prompt_bg.fill((255, 255, 255))  # Background color (white)
+        #prompt_bg = pygame.Surface((400, 150))
+        #prompt_bg.fill((255, 255, 255))  # Background color (white)
+        prompt_bg = pygame.image.load("Prompt Images/tattered_prompt.png").convert_alpha()
+        prompt_bg = pygame.transform.scale(prompt_bg, (400, 200))
+
 
         # Draw a border for the dialogue box
-        pygame.draw.rect(
-            prompt_bg, (0, 0, 0), pygame.Rect(0, 0, 400, 150), 3
-        )  # Border color (black), thickness 3
+        #border_rect = pygame.draw.rect(
+            #prompt_bg, (0, 0, 0), pygame.Rect(0, 0, 400, 150), 3
+        #)  # Border color (black), thickness 3
+        
+        # Get the dimensions of the drawn rectangle
+        #border_width = border_rect.width #TEST
+        #border_height = border_rect.height #TEST
+        
+        # Get the dimensions of the prompt_bg
+        prompt_bg_width = prompt_bg.get_width()
+        prompt_bg_height = prompt_bg.get_height()
+        
+        # Print or use the dimensions as needed
+        #print("Dimensions of the drawn rectangle:", border_width, "x", border_height)
+        print("Dimensions of the prompt_bg:", prompt_bg_width, "x", prompt_bg_height)
 
         # Create a custom font for the text
         prompt_font = pygame.font.Font(
@@ -268,7 +292,9 @@ def display_text_prompt():
         # Blit the arrow image onto the prompt_bg
         prompt_bg.blit(pointer_image, (arrow_x, 95)) #Added
 
-        screen.blit(prompt_bg, (200, 450))
+        screen.blit(prompt_bg, (150, 400))
+        
+        
 
 # Initializes variables to track key states
 left_key_pressed = False
@@ -297,21 +323,26 @@ while run:
         # ===========================================
             elif event.key == pygame.K_LEFT:
                 player.go_left(scroll)
+
             elif event.key == pygame.K_RIGHT:
                 player.go_right(scroll)
+
             elif event.key == pygame.K_UP:
                 #Added to be able to change the arrow in prompts
                 if display_prompt == True and arrow_position == "No":
                     arrow_position = "Yes"  # Move selection up
                 else:
                     player.jump()
+
             elif event.key == pygame.K_DOWN:
                 #Added to be able to change the arrow in prompts
                 if display_prompt == True and arrow_position == "Yes":
                     arrow_position = "No"  # Move selection up
+
         elif event.type == pygame.KEYUP:
             if event.key in (pygame.K_LEFT, pygame.K_RIGHT):
                 player.stop()
+
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 run = False
@@ -325,16 +356,21 @@ while run:
 
     player.update(player_start)
     if player.change_x != 0:
-        scroll -= (player.change_x * 5)
-    print(f"Player X: {player.rect.x}, Change X: {player.change_x}, Scroll: {scroll}")
+        if is_level_1:
+            scroll -= (player.change_x * 5)
+    print(f"Player X: {player.rect.x},Player Y: {player.rect.y}, Change X: {player.change_x}, Scroll: {scroll}")
 
     # Limits the scrolling to the size of the ground image
     scroll = max(min(0, scroll), SCREEN_WIDTH - ground_image.get_width())
 
     # Draws the background, clouds, and ground at the new position
-    screen.blit(bg_images[0], (scroll, 0))
-    screen.blit(bg_images[1], (scroll * .25, 0))
-    screen.blit(ground_image, (scroll, SCREEN_HEIGHT - ground_height))
+    if is_level_1:
+        screen.blit(bg_images[0], (scroll, 0))
+        screen.blit(bg_images[1], (scroll * .25, 0))
+        screen.blit(ground_image, (scroll, SCREEN_HEIGHT - ground_height))
+    elif is_level_2:
+        screen.blit(bg2_image, (scroll * .25, 0))
+        screen.blit(bg2_ground_image, (scroll, SCREEN_HEIGHT - bg2_ground_height))
 
     if player.invulnerable and (pygame.time.get_ticks() - player.last_damage_time > player.invulnerability_duration):
         player.invulnerable = False
