@@ -82,6 +82,8 @@ class Character(pygame.sprite.Sprite):
         self.is_attacking = False
         self.attack_speed = 5
         self.attack_target = None
+        self.alive = True
+        self.health = 2
 
     #
     def get_frame(self, frame_set):
@@ -101,40 +103,58 @@ class Character(pygame.sprite.Sprite):
             self.sheet.set_clip(pygame.Rect(clipped_rect))
         return clipped_rect
 
+    # Causes the bird to take damage
+    def take_damage(self):
+        if self.alive:
+            self.health -= 1
+            if self.health <= 0:
+                self.die()
+
+    # Causes the bird to die
+    def die(self):
+        self.alive = False
+        #self.kill()
+        #self.stop()
+        #self.image = pygame.transform.rotate(self.sheet.subsurface(self.sheet.get_clip()), 270)
+        print("rip birdo")
+        print("rip birdo")
+        print("rip birdo")
+
     # Updates the bird
     def update(self):
-        if not self.is_attacking:
-            current_time = pygame.time.get_ticks()
-            # Moves the bird right/left
-            self.rect.x += self.velocity_x * self.direction
-            if self.direction == 1:
-                self.current_states = self.right_states
+        if self.alive:
+            if not self.is_attacking:
+                current_time = pygame.time.get_ticks()
+                # Moves the bird right/left
+                self.rect.x += self.velocity_x * self.direction
+                if self.direction == 1:
+                    self.current_states = self.right_states
+                else:
+                    self.current_states = self.left_states
+
+                # Loops through the sprite sequences
+
+                # self.frame_index += 1
+                # if self.frame_index >= len(self.current_states):
+                #     self.frame_index = 0
+                # self.image = self.sheet.subsurface(self.current_states[self.frame_index])
+
+                # self.current_states = self.right_states if self.direction == 1 else self.left_states
+                # self.frame_index = (self.frame_index + 1) % len(self.current_states)
+                # self.image = self.sheet.subsurface(self.current_states[self.frame_index])   
+                
+                if current_time - self.last_frame_time > self.frame_delay:
+                    self.frame_index = (self.frame_index + 1) % len(self.current_states)
+                    self.image = self.sheet.subsurface(self.current_states[self.frame_index])
+                    self.last_frame_time = current_time 
+
             else:
-                self.current_states = self.left_states
-
-            # Loops through the sprite sequences
-
-            # self.frame_index += 1
-            # if self.frame_index >= len(self.current_states):
-            #     self.frame_index = 0
-            # self.image = self.sheet.subsurface(self.current_states[self.frame_index])
-
-            # self.current_states = self.right_states if self.direction == 1 else self.left_states
-            # self.frame_index = (self.frame_index + 1) % len(self.current_states)
-            # self.image = self.sheet.subsurface(self.current_states[self.frame_index])   
-            
-            if current_time - self.last_frame_time > self.frame_delay:
-                self.frame_index = (self.frame_index + 1) % len(self.current_states)
-                self.image = self.sheet.subsurface(self.current_states[self.frame_index])
-                self.last_frame_time = current_time 
-
-        else:
-            # Attacks the player
-            if (player.Character.alive):
-                self.attack_player()
-            else:
-                self.is_attacking = False
-                self.is_returning = False   
+                # Attacks the player
+                if (player.Character.alive):
+                    self.attack_player()
+                else:
+                    self.is_attacking = False
+                    self.is_returning = False   
 
     # Changes the horizontal direction of the bird
     def change_direction(self):

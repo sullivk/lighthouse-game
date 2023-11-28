@@ -308,6 +308,10 @@ while run:
                     player.go_right(scroll)
                 elif event.key == pygame.K_UP:
                     player.jump()
+                if event.key == pygame.K_SPACE:
+                    player.punch = True    
+                    if pygame.sprite.collide_rect(bird, player):
+                        bird.take_damage()
         elif event.type == pygame.KEYUP:
             if event.key in (pygame.K_LEFT, pygame.K_RIGHT):
                 player.stop()   
@@ -336,7 +340,7 @@ while run:
         player.invulnerable = False
 
     # Checks for collision between bird and player
-    if (player.alive):
+    if (player.alive and bird.alive):
         if pygame.sprite.collide_rect(bird, player) and not player.invulnerable:
             player.take_damage()
             current_health = player.health
@@ -349,16 +353,18 @@ while run:
             screen.blit(empty_heart_image, (10 + i * 40, SCREEN_HEIGHT - 40))
 
     # Updates the bird
-    bird.update()
-    bird.detect_player_proximity(player)
-    if bird.rect.x > 1000:
-        bird.change_direction()
-    if bird.rect.x < -200:
-        bird.change_direction()
+    if bird.alive:
+        bird.update()
+        bird.detect_player_proximity(player)
+        if bird.rect.x > 1000:
+            bird.change_direction()
+        if bird.rect.x < -200:
+            bird.change_direction()       
         
     # Draws the player character
     screen.blit(player.image, player.rect)
-    screen.blit(bird.image, bird.rect)
+    if bird.alive:
+        screen.blit(bird.image, bird.rect)
     pygame.display.update()
 
 # ========================
