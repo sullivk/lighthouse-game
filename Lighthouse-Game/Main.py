@@ -2,6 +2,7 @@ import pygame
 import player
 import os
 import bird
+import pauseMenu
 
 pygame.init()
 
@@ -30,6 +31,8 @@ SCREEN_HEIGHT = 600
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("The Lighthouse - Milestone 3")
 
+
+
 # ============================================
 #                     HUD
 # ============================================
@@ -40,9 +43,9 @@ current_health = max_health
 
 # Load heart image
 heart_image = pygame.image.load('HUD/heart.png')
-empty_heart_image = pygame.image.load('HUD/empty_heart.png')
+empty_heart_image = pygame.image.load('HUD/empty_heart.png') #Added
 heart_image = pygame.transform.scale(heart_image, (30, 30))
-empty_heart_image = pygame.transform.scale(empty_heart_image, (30, 30))
+empty_heart_image = pygame.transform.scale(empty_heart_image, (30, 30)) #Added
 # ============================================
 
 # ============================================
@@ -158,13 +161,16 @@ def reset_player_position():
     # Set the player's x position to be inside the lighthouse
     player.rect.x = 20
     # Set the player's y position to the ground inside the lighthouse
-    player.rect.y = SCREEN_HEIGHT - ground_height - player.rect.height + 10
+    player.rect.y = SCREEN_HEIGHT - ground_height - player.rect.height - 10
 
 
 # Function to switch between levels
 def switch_level(new_level, new_scroll):
     global current_level, scroll, at_lighthouse_entrance_door, ground_image, ground_height, ground_width, is_level_1, is_level_2, left_scroll_limit, right_scroll_limit
     current_level = [new_level]
+    print("Switching levels...")
+    print(f"is_level_1: {is_level_1}, is_level_2: {is_level_2}")
+    print(f"new_level: {new_level}, new_scroll: {new_scroll}")
 
     if new_level == bg2_image:
         left_scroll_limit = -2
@@ -175,8 +181,11 @@ def switch_level(new_level, new_scroll):
         ground_image = bg2_ground_image
         ground_height = bg2_ground_height
         ground_width = bg2_ground_width
+        level_image = bg2_images
+        #level_width = level_image.get_width()
         at_lighthouse_entrance_door = False
         scroll = new_scroll
+        #load_level("BG2")
         reset_player_position()  # Reset player's position inside the lighthouse
     else:
         scroll = new_scroll
@@ -192,8 +201,10 @@ def switch_level(new_level, new_scroll):
 # Initializes the arrow position to "Yes" by default
 arrow_position = "Yes"
 
-# Function to display the custom Pokemon-style prompt
-def display_pokemon_style_prompt(arrow_position):
+# Function to display the custom prompt
+def display_text_prompt():
+    global display_prompt
+    
     if display_prompt == True:
         # Create a custom dialogue box background
         prompt_bg = pygame.Surface((400, 150))
@@ -210,13 +221,14 @@ def display_pokemon_style_prompt(arrow_position):
         )  # You can adjust the font size as needed
 
         # Render and display the text on the dialogue box
-        if is_level_1 and right_scroll_limit:
+        if is_level_1 and player.rect.x >= 615 and player.rect.x <= 650:
             prompt_text = prompt_font.render(
-                "Do you want to enter the lighthouse? (Y/N)", True, (0, 0, 0)
+                "Do you want to enter the lighthouse?",
+                True, (0, 0, 0)
             )  # Text color (black)
         if is_level_2 and left_scroll_limit:
             prompt_text = prompt_font.render(
-                "Do you want to exit the lighthouse? (Y/N)", True, (0, 0, 0)
+                "Do you want to exit the lighthouse? (Press ENTER to Exit)", True, (0, 0, 0)
             )  # Text color (black)
 
         # Positions the text in the center of the dialogue box
@@ -227,36 +239,34 @@ def display_pokemon_style_prompt(arrow_position):
 
         # Creates a custom font for the selected option
         selected_option_font = pygame.font.Font(None, 36)
-
-        # Defines Unicode arrow characters
-        arrow_yes = "\u25B6"  # Right arrow
-        arrow_no = "\u25B2"  # Up arrow
+        
+        # Load the arrow image
+        pointer_image = pygame.image.load('pointer.png') #Added
+        pointer_image = pygame.transform.scale(pointer_image, (30, 30)) #Added
 
         # Defines text for "Yes" and "No" options with arrow
-        text_yes = f"{arrow_yes} Yes"
-        text_no = f"{arrow_no} No"
+        text_yes = "Yes (ENTER key)"
 
         # Renders and displays the selected option with the arrow
-        if arrow_position == "Yes":
-            selected_text = selected_option_font.render(text_yes, True, (0, 0, 0))
-        elif arrow_position == "No":
-            selected_text = selected_option_font.render(text_no, True, (0, 0, 0))
-
+        selected_text = selected_option_font.render(text_yes, True, (0, 0, 0))
+        # Create a new surface to combine the arrow image and text
+        combined_surface = pygame.Surface((pointer_image.get_width() + selected_text.get_width(), max(pointer_image.get_height(), selected_text.get_height())))
+        combined_surface.fill((255, 255, 255))  # Set the background color (white)
+        combined_surface.blit(pointer_image, (0, 0))  # Blit the arrow image
+        combined_surface.blit(selected_text, (pointer_image.get_width(), 0))
+        
         selected_rect = selected_text.get_rect(
             center=(200, 110)
         )  # Positions the selected text
 
-        # Renders and display the other option without the arrow
-        if arrow_position == "Yes":
-            other_text = prompt_font.render("No", True, (0, 0, 0))
-        elif arrow_position == "No":
-            other_text = prompt_font.render("Yes", True, (0, 0, 0))
-
-        other_rect = other_text.get_rect(center=(200, 140))  # Position the other text
-
         # Displays the selected and other options
         prompt_bg.blit(selected_text, selected_rect)
-        prompt_bg.blit(other_text, other_rect)
+        
+        # Calculate the position of the arrow based on the arrow_position
+        arrow_x = 60
+
+        # Blit the arrow image onto the prompt_bg
+        prompt_bg.blit(pointer_image, (arrow_x, 95)) #Added
 
         screen.blit(prompt_bg, (200, 450))
 
@@ -266,6 +276,7 @@ right_key_pressed = False
 
 # Game loop
 run = True
+paused = False
 while run:
     clock.tick(FPS)
     
@@ -279,18 +290,36 @@ while run:
         if event.type == pygame.QUIT:
             run = False
         elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_LEFT:
+        # Added for ingame menu =====================
+            if event.key == pygame.K_p:
+                print("GAME PAUSED")
+                paused = pauseMenu.display_pause_menu(screen)  # Call the pause menu function
+        # ===========================================
+            elif event.key == pygame.K_LEFT:
                 player.go_left(scroll)
             elif event.key == pygame.K_RIGHT:
                 player.go_right(scroll)
             elif event.key == pygame.K_UP:
-                player.jump()
+                #Added to be able to change the arrow in prompts
+                if display_prompt == True and arrow_position == "No":
+                    arrow_position = "Yes"  # Move selection up
+                else:
+                    player.jump()
+            elif event.key == pygame.K_DOWN:
+                #Added to be able to change the arrow in prompts
+                if display_prompt == True and arrow_position == "Yes":
+                    arrow_position = "No"  # Move selection up
         elif event.type == pygame.KEYUP:
             if event.key in (pygame.K_LEFT, pygame.K_RIGHT):
-                player.stop()   
+                player.stop()
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
-                run = False                 
+                run = False
+            elif event.key == pygame.K_RETURN:
+                if is_level_1 and at_lighthouse_entrance_door:
+                    switch_level(bg2_image, 0)  # Switch to level 2
+                    display_prompt = False  # Hide the prompt after switching levels
+                    at_lighthouse_entrance_door = False
 
     key = pygame.key.get_pressed()
 
@@ -307,7 +336,6 @@ while run:
     screen.blit(bg_images[1], (scroll * .25, 0))
     screen.blit(ground_image, (scroll, SCREEN_HEIGHT - ground_height))
 
-    #
     if player.invulnerable and (pygame.time.get_ticks() - player.last_damage_time > player.invulnerability_duration):
         player.invulnerable = False
 
@@ -335,6 +363,26 @@ while run:
     # Draws the player character
     screen.blit(player.image, player.rect)
     screen.blit(bird.image, bird.rect)
+    
+    #=======================================================================================================
+    # Prompt Flags
+    #=======================================================================================================
+
+    # Check if player is at the the front door of the lighthouse
+    if is_level_1:
+        if player.rect.x >= 615 and player.rect.x <= 650:
+            at_lighthouse_entrance_door = True
+            print("At Lighthouse door: player.rect.x == ")
+            print(player.rect.x)
+            display_text_prompt()
+            display_prompt = True  # Set the display_prompt flag to True to show the prompt
+        else:
+            display_prompt = False  # Set the display_prompt flag to False if not at the specific x position
+    
+    # Draw the prompt if the flag is set
+    if display_prompt:
+        display_text_prompt()
+    
     pygame.display.update()
 
 # ========================
