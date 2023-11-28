@@ -264,8 +264,29 @@ def display_pokemon_style_prompt(arrow_position):
 left_key_pressed = False
 right_key_pressed = False
 
+# Create the game window
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+pygame.display.set_caption("Discover the Lighthouse")
+
+# Title Menu
+title_background_image = pygame.image.load("Menu/Title.png") 
+
 # Game loop
-run = True
+title_menu = True
+run = False
+
+while title_menu:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            title_menu = False
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:  # Space bar pressed to start the game
+                title_menu = False
+                run = True
+
+    screen.blit(title_background_image, (0, 0))
+    pygame.display.flip()
+
 while run:
     clock.tick(FPS)
     
