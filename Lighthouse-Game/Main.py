@@ -26,7 +26,7 @@ display_prompt = False
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
-# Create the game window
+# Creates the game window
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("The Lighthouse - Milestone 3")
 
@@ -38,7 +38,7 @@ pygame.display.set_caption("The Lighthouse - Milestone 3")
 max_health = 5
 current_health = max_health
 
-# Load heart image
+# Loads heart images
 heart_image = pygame.image.load('HUD/heart.png')
 empty_heart_image = pygame.image.load('HUD/empty_heart.png') #Added
 heart_image = pygame.transform.scale(heart_image, (30, 30))
@@ -94,6 +94,7 @@ bg2_right_scroll_limit = min_bg2_width - SCREEN_WIDTH
 bg2_ground_image = pygame.image.load("BG2/ground/ground.png").convert_alpha()
 bg2_ground_width = bg2_ground_image.get_width()
 bg2_ground_height = bg2_ground_image.get_height()
+
 
 # ============================================
 # Section 3: Create New Levels
@@ -159,7 +160,6 @@ def reset_player_position():
     player.rect.x = 20
     # Set the player's y position to the ground inside the lighthouse
     player.rect.y = SCREEN_HEIGHT - ground_height - player.rect.height + 10
-
 
 # Function to switch between levels
 def switch_level(new_level, new_scroll):

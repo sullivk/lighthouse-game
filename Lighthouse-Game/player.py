@@ -89,9 +89,8 @@ class Character(pygame.sprite.Sprite):
                             
                               }
 
-    # 
+    # Loops through the sprite sequences
     def get_frame(self, frame_set):
-        # Loops through the sprite sequences
         self.frame += 1
         
         #if loop index is higher that the size of the frame return to the first frame 
@@ -99,7 +98,6 @@ class Character(pygame.sprite.Sprite):
             self.frame = 0
         return frame_set[self.frame]
 
-    # 
     def clip(self, clipped_rect):
         if type(clipped_rect) is dict:
             self.sheet.set_clip(pygame.Rect(self.get_frame(clipped_rect)))
@@ -107,6 +105,7 @@ class Character(pygame.sprite.Sprite):
             self.sheet.set_clip(pygame.Rect(clipped_rect))
         return clipped_rect
 
+    # Updates the player
     def update(self, direction):
         self.calculate_gravity()
         if not self.alive and self.rect.y >= self.ground_level:
@@ -127,10 +126,11 @@ class Character(pygame.sprite.Sprite):
                         self.last_frame_time = current_time
                         self.image = self.punch_bird_sheet.subsurface(self.punch_left_states[self.frame_index])    
 
-                # Check if the punch duration has elapsed
+                # Checks if the punch duration has elapsed
                 if current_time - self.punch_time > self.punch_duration:
                     self.punch = False
 
+            # Makes sure the player faces the correct way
             elif self.change_x > 0:
                 self.clip(self.right_states)
             elif self.change_x < 0:
@@ -172,10 +172,8 @@ class Character(pygame.sprite.Sprite):
 
     # Causes the player to die
     def die(self):
-        # Handles player death (menu stuff?)
         self.alive = False
         self.stop()
-        #self.image = pygame.transform.rotate(self.sheet.subsurface(self.sheet.get_clip()), 270)
         if self.facing_right:
             self.full_sheet.set_clip(pygame.Rect(0, 0, 124, 190))
             self.image = self.full_sheet.subsurface(self.dead_right[0])
@@ -242,12 +240,8 @@ class Character(pygame.sprite.Sprite):
 
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
-                #self.rect.x -= self.speed
-                #self.update('left')
                 self.go_left()
             if event.key == pygame.K_RIGHT:
-                #self.rect.x += self.speed
-                #self.update('right')
                 self.go_right() 
             if event.key == pygame.K_UP:
                 self.update('up')

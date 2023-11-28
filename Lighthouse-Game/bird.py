@@ -83,11 +83,10 @@ class Character(pygame.sprite.Sprite):
         self.attack_speed = 5
         self.attack_target = None
         self.alive = True
-        self.health = 2
+        self.health = 10
 
-    #
+    # Loops through the sprite sequences
     def get_frame(self, frame_set):
-        # Loops through the sprite sequences
         self.frame += 1
         
         #if loop index is higher that the size of the frame return to the first frame 
@@ -95,7 +94,6 @@ class Character(pygame.sprite.Sprite):
             self.frame = 0
         return frame_set[self.frame]
 
-    #
     def clip(self, clipped_rect):
         if type(clipped_rect) is dict:
             self.sheet.set_clip(pygame.Rect(self.get_frame(clipped_rect)))
@@ -113,9 +111,6 @@ class Character(pygame.sprite.Sprite):
     # Causes the bird to die
     def die(self):
         self.alive = False
-        #self.kill()
-        #self.stop()
-        #self.image = pygame.transform.rotate(self.sheet.subsurface(self.sheet.get_clip()), 270)
         print("rip birdo")
         print("rip birdo")
         print("rip birdo")
@@ -133,16 +128,6 @@ class Character(pygame.sprite.Sprite):
                     self.current_states = self.left_states
 
                 # Loops through the sprite sequences
-
-                # self.frame_index += 1
-                # if self.frame_index >= len(self.current_states):
-                #     self.frame_index = 0
-                # self.image = self.sheet.subsurface(self.current_states[self.frame_index])
-
-                # self.current_states = self.right_states if self.direction == 1 else self.left_states
-                # self.frame_index = (self.frame_index + 1) % len(self.current_states)
-                # self.image = self.sheet.subsurface(self.current_states[self.frame_index])   
-                
                 if current_time - self.last_frame_time > self.frame_delay:
                     self.frame_index = (self.frame_index + 1) % len(self.current_states)
                     self.image = self.sheet.subsurface(self.current_states[self.frame_index])
@@ -163,8 +148,6 @@ class Character(pygame.sprite.Sprite):
 
     # Detects how close the bird is to the player
     def detect_player_proximity(self, player):
-        # if not player.alive:
-        #     return
         player_x, player_y = player.rect.center
         bird_x, bird_y = self.rect.center
         
