@@ -31,7 +31,7 @@ def display_pause_menu(screen):
                     if button["rect"].collidepoint(mouse_pos):
                         button["clicked"] = True
                         draw_button(screen, button["text"], button["rect"], button["clicked"], button["hovered"])
-                        handle_button_click(button, screen, paused)
+                        paused = handle_button_click(button, screen, paused)
     
         # Check if the mouse is over any button and set cursor accordingly
         for button in buttons:
@@ -66,7 +66,8 @@ def display_pause_menu(screen):
         # Add your pause menu logic (e.g., button clicks, resume game, etc.)
         keys = pygame.key.get_pressed()
         if keys[pygame.K_r]:  # Resume game
-            paused = False
+            #paused = False # WORKS
+            paused = handle_button_click({"text": "Resume"}, screen, paused)
         elif keys[pygame.K_q]:  # Quit game
             pygame.quit()
             quit()
