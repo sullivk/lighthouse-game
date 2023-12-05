@@ -4,16 +4,19 @@ import os
 def display_pause_menu(screen):
     paused = True
     is_settings = False
-    
-    pause_bg = pygame.image.load("Prompt Images/resized_pause_menu_bg.png").convert_alpha()
-    
+
+    try:
+        pause_bg = pygame.image.load("Prompt Images/resized_pause_menu_bg.png").convert_alpha()
+    except pygame.error as e:
+        print(f"Error loading image: {e}")
+
     button_width, button_height = 200, 40
 
     resume_button_rect = pygame.Rect(screen.get_width() // 2 - button_width // 2, 150, button_width, button_height)
     settings_button_rect = pygame.Rect(screen.get_width() // 2 - button_width // 2, 200, button_width, button_height)
     quit_title_button_rect = pygame.Rect(screen.get_width() // 2 - button_width // 2, 250, button_width, button_height)
     quit_game_button_rect = pygame.Rect(screen.get_width() // 2 - button_width // 2, 300, button_width, button_height)
-    
+
     buttons = [
         {"text": "Resume", "rect": resume_button_rect, "clicked": False},
         {"text": "Settings", "rect": settings_button_rect, "clicked": False},
@@ -84,16 +87,16 @@ def display_pause_menu(screen):
     return paused
 
 def draw_button(screen, text, rect, clicked, hovered):
-    print("Hovered:", hovered) 
+    #print("Hovered:", hovered) 
     border_color = (0, 0, 0)
     text_color = (0, 0, 0)  # Default text color black - DONT CHANGE
     
     if clicked:
-        print("Clicked:", clicked) 
+        #print("Clicked:", clicked) 
         border_color = (50, 50, 50)  # Change color when clicked
         text_color = (255, 255, 255)  # Change color when clicked
     elif hovered:
-        print("Hovered:", hovered) 
+        #print("Hovered:", hovered) 
         border_color = (255, 255, 255)  # Change border color when hovered
         text_color = (255, 255, 255) 
 
@@ -132,11 +135,22 @@ def display_settings_menu(screen, is_settings):
     # For example, show controls and a back button
     settings_bg = pygame.image.load("Prompt Images/resized_pause_menu_bg.png").convert_alpha()
 
-    
     button_width, button_height = 200, 40
     back_button_rect = pygame.Rect(screen.get_width() // 2 - button_width // 2, 150, button_width, button_height)
 
     back_button = {"text": "Back", "rect": back_button_rect, "clicked": False, "hovered": False}
+
+    controls_info = [
+        "Controls:",
+        "Left Arrow Key - Move Left",
+        "Right Arrow Key - Move Right",
+        "Up Arrow Key - Jump",
+        "Down Arrow Key - Move Down",
+        "Right Arrow Key - Move Right",
+        "P Key - Pause Game",
+        "R Key - Resume Game",
+        "Q Key - Quit Game",
+    ]
 
     # Draw buttons with hover effect
     draw_button(screen, back_button["text"], back_button["rect"], back_button["clicked"], back_button["hovered"])
@@ -158,18 +172,31 @@ def display_settings_menu(screen, is_settings):
             pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
         else:
             back_button["hovered"] = False
-    
+
         # Draw settings menu elements
         screen.fill((0, 0, 0))
-        pause_bg = pygame.image.load("Prompt Images/resized_pause_menu_bg.png").convert_alpha()
+        settings_bg = pygame.image.load("Prompt Images/resized_pause_menu_bg.png").convert_alpha()
+        image_rect = settings_bg.get_rect(center=(screen.get_width() // 2, 300))
+        screen.blit(settings_bg, image_rect)
+        
         font = pygame.font.Font(None, 36)
         text = font.render("Settings", True, (255, 255, 255))  # White color
         text_rect = text.get_rect(center=(screen.get_width() // 2, 50))
         screen.blit(text, text_rect)
-        
-        image_rect = pause_bg.get_rect(center=(screen.get_width() // 2, 300))
-        screen.blit(pause_bg, image_rect)
 
+        # Draw controls information
+        controls_font = pygame.font.Font(None, 24)
+        controls_y_pos = 210
+        for line in controls_info:
+            controls_text = controls_font.render(line, True, (0, 0, 0))
+            controls_text_rect = controls_text.get_rect(center=(screen.get_width() // 2, controls_y_pos))
+            screen.blit(controls_text, controls_text_rect)
+            controls_y_pos += 30
+        
+        #image_rect = settings_bg.get_rect(center=(screen.get_width() // 2, 300))
+        #screen.blit(settings_bg, image_rect)
+
+        # Draw back button
         draw_button(screen, back_button["text"], back_button["rect"], back_button["clicked"], back_button["hovered"])
 
         pygame.display.update()
