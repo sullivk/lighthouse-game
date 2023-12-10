@@ -162,11 +162,11 @@ at_lighthouse_entrance_door = False
 def reset_player_position():
     # Set the player's x position to be outside
     if is_level_1:
-        player.rect.x = 630
+        player.rect.x = 630 # ???
     elif is_level_2:
         # Set the player's x position to be inside the lighthouse
         player.rect.x = 20
-        player.rect.y = 40
+        #player.rect.y = 40 # ???
 
 # Function to switch between levels
 def switch_level(new_level, new_scroll):
@@ -177,7 +177,7 @@ def switch_level(new_level, new_scroll):
     print(f"new_level: {new_level}, new_scroll: {new_scroll}")
 
     if new_level == bg2_image:
-        left_scroll_limit = -2
+        left_scroll_limit = -100
         right_scroll_limit = bg2_right_scroll_limit
         is_level_1 = False
         is_level_2 = True
@@ -187,6 +187,7 @@ def switch_level(new_level, new_scroll):
         ground_width = bg2_ground_width
         level_image = bg2_image
         at_lighthouse_entrance_door = False
+        scroll = 0
         #scroll = new_scroll
         #load_level("BG2")
         print(f"is_level_1: {is_level_1}, is_level_2: {is_level_2}")
@@ -424,6 +425,13 @@ while run:
             display_prompt = True  # Set the display_prompt flag to True to show the prompt
         else:
             display_prompt = False  # Set the display_prompt flag to False if not at the specific x position
+
+    # Check if player is at the ladder
+    if is_level_2:
+        if player.rect.x >= 350 and player.rect.x <= 360:
+            at_lighthouse_entrance_door = True
+            print("At Lighthouse ladder: player.rect.x == ")
+            print(player.rect.x)
 
     # Draw the prompt if the flag is set
     if display_prompt:
