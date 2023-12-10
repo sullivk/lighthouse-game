@@ -179,7 +179,8 @@ class Character(pygame.sprite.Sprite):
             self.image = self.full_sheet.subsurface(self.dead_right[0])
         else:
             self.full_sheet.set_clip(pygame.Rect(0, 0, 124, 190))
-            self.image = self.full_sheet.subsurface(self.dead_left[0])
+            #self.image = self.full_sheet.subsurface(self.dead_left[0])
+            self.image = self.full_sheet.subsurface(self.dead_right[0]) # dead_left is broken and crashes the game
         print("rip bozo")
         print("rip bozo")
         print("rip bozo")
