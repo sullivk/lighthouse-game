@@ -347,6 +347,8 @@ while run:
                 print("GAME PAUSED")
                 paused = pauseMenu.display_pause_menu(screen)  # Call the pause menu function
             # ===========================================
+            if event.key == pygame.K_2:
+                is_level_2 = True
             if (player.alive):
                 if event.key == pygame.K_LEFT:
                     new_position_x = player.rect.x - PLAYER_SPEED
@@ -360,17 +362,19 @@ while run:
                     if at_ladder:
                         player.rect.y -= 10
                         player.climbing = True
+                        player.update_climbing_animation()
                         #player.climb()
                     else:    
                         player.jump()
                 elif event.type == pygame.KEYUP:
                     if event.key == pygame.K_UP and at_ladder:
-                        player.climbing = False
+                        #player.climbing = False
                         player.stop_climbing()
                 elif event.key == pygame.K_DOWN:
                     if at_ladder:
-                        #player.rect.y += 10
-                        player.climb2()        
+                        player.rect.y += 10
+                        player.update_climbing_animation()
+                        #player.climb2()        
                 if event.key == pygame.K_SPACE:
                     player.punch = True    
                     if pygame.sprite.collide_rect(bird, player):
