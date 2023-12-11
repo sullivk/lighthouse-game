@@ -1,9 +1,8 @@
 import pygame
 import os
 
-def display_pause_menu(screen, paused, run):
+def display_winning_screen(screen, paused, run):
     paused = True
-    is_controls = False
 
     try:
         pause_bg = pygame.image.load("Prompt Images/resized_pause_menu_bg.png").convert_alpha()
@@ -51,8 +50,8 @@ def display_pause_menu(screen, paused, run):
         font = pygame.font.Font(None, 60)
         font2 = pygame.font.Font(None, 24)
         text = font.render("You Won!", True, (255, 255, 255))  # Red color
-        text2 = font2.render("You did made it to", True, (0, 0, 0))
-        text3 = font2.render("the top of the lighthouse!", True, (0, 0, 0))  # Red color
+        text2 = font2.render("You made it to the", True, (0, 0, 0))
+        text3 = font2.render("top of the lighthouse!", True, (0, 0, 0))  # Red color
 
         text_rect = text.get_rect(center=(screen.get_width() // 2, 200))
         screen.blit(text, text_rect)
@@ -78,16 +77,13 @@ def display_pause_menu(screen, paused, run):
     return paused
 
 def draw_button(screen, text, rect, clicked, hovered):
-    #print("Hovered:", hovered) 
     border_color = (0, 0, 0)
-    text_color = (0, 0, 0)  # Default text color black - DONT CHANGE
+    text_color = (0, 0, 0) 
     
     if clicked:
-        #print("Clicked:", clicked) 
         border_color = (50, 50, 50)  # Change color when clicked
         text_color = (255, 255, 255)  # Change color when clicked
     elif hovered:
-        #print("Hovered:", hovered) 
         border_color = (255, 255, 255)  # Change border color when hovered
         text_color = (255, 255, 255) 
 
