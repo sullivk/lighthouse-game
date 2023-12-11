@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import pygame
 
 SCREEN_WIDTH = 800
@@ -35,7 +33,7 @@ class Character(pygame.sprite.Sprite):
         # Player variables
         self.moving_right = False
         self.moving_left = False
-        self.speed = 5
+        self.speed = 1
         self.change_x = 0
         self.change_y = 0
         self.last_frame_time = pygame.time.get_ticks()
@@ -53,6 +51,10 @@ class Character(pygame.sprite.Sprite):
         self.punch_duration = 2000
         self.punch_time = 0
         self.facing_right = True
+        self.is_level_2 = False
+        self.ladder = False
+        self.climbing = False
+        self.climbing_frame_index = 0
 
         # Jump info
         self.is_jumping = False
@@ -60,9 +62,11 @@ class Character(pygame.sprite.Sprite):
         self.ground_level = 600 - 135 - 250
 
         # Up/down states
-        self.down_states = { 0: (35, 602, self.rectWidth, self.rectHeight) }     
+        self.down_states = { 0: (0, 611, self.rectWidth, self.rectHeight),
+                             1: (125, 611, self.rectWidth, self.rectHeight) }     
         
-        self.up_states = { 0: (35, 602, self.rectWidth, self.rectHeight) }  
+        self.up_states = { 0: (35, 602, self.rectWidth, self.rectHeight),
+                           1: (35, 602, self.rectWidth, self.rectHeight) }  
          
         # Right/left punch states
         self.punch_right_states = { 0: (0, 426, self.rectWidth, self.rectHeight) }     
@@ -70,7 +74,7 @@ class Character(pygame.sprite.Sprite):
         self.punch_left_states = { 0: (119, 426, self.rectWidth, self.rectHeight) }  
 
         # Dead states
-        self.dead_left = { 0: (186, 6856, self.rectWidth, self.rectHeight) }     
+        self.dead_left = { 0: (186, 856, self.rectWidth, self.rectHeight) }     
         
         self.dead_right = { 0: (0, 856, self.rectWidth, self.rectHeight) }  
 
@@ -106,8 +110,16 @@ class Character(pygame.sprite.Sprite):
         return clipped_rect
 
     # Updates the player
-    def update(self, direction):
-        self.calculate_gravity()
+    def update(self, level, at_ladder):
+        if not self.alive:
+            self.image = self.full_sheet.subsurface(self.dead_right[0]) # dead_left is broken
+        self.ladder = at_ladder
+        # if self.ladder:
+        #     self.clip(self.down_states)
+        if self.climbing:
+            self.update_climbing_animation()
+        self.is_level_2 = level
+        self.calculate_gravity(self.ladder)
         if not self.alive and self.rect.y >= self.ground_level:
             self.change_y = 0
             self.rect.y = self.ground_level + 200
@@ -180,7 +192,7 @@ class Character(pygame.sprite.Sprite):
         else:
             self.full_sheet.set_clip(pygame.Rect(0, 0, 124, 190))
             #self.image = self.full_sheet.subsurface(self.dead_left[0])
-            self.image = self.full_sheet.subsurface(self.dead_right[0]) # dead_left is broken and crashes the game
+            self.image = self.full_sheet.subsurface(self.dead_right[0]) # dead_left is broken
         print("rip bozo")
         print("rip bozo")
         print("rip bozo")
@@ -198,39 +210,95 @@ class Character(pygame.sprite.Sprite):
             self.current_states = self.punch_left_states
 
     # Calculates gravity
-    def calculate_gravity(self):
-        # Calculates gravity
-        if self.change_y == 0:
-            self.change_y = 1
+    def calculate_gravity(self, at_ladder):
+        if not at_ladder:
+            # Calculates gravity
+            if self.change_y == 0:
+                self.change_y = 1
+            else:
+                self.change_y += .35
+    
+            # Makes sure the player hits the ground
+            if self.rect.y >= SCREEN_HEIGHT - 100 - self.rect.height and self.change_y >= 0:
+                self.change_y = 0
+                self.rect.y = SCREEN_HEIGHT - 100 - self.rect.height
         else:
-            self.change_y += .35
- 
-        # Makes sure the player hits the ground
-        if self.rect.y >= SCREEN_HEIGHT - 100 - self.rect.height and self.change_y >= 0:
-            self.change_y = 0
-            self.rect.y = SCREEN_HEIGHT - 100 - self.rect.height
+            # Makes sure the player hits the ground
+            if self.rect.y >= SCREEN_HEIGHT - 100 - self.rect.height and self.change_y >= 0:
+                self.change_y = 0
+                self.rect.y = SCREEN_HEIGHT - 100 - self.rect.height       
  
     # Jumps
     def jump(self):
         if not self.is_jumping:
-                    self.is_jumping = True
-                    self.change_y = -10
+                self.is_jumping = True
+                self.change_y = -10
  
+    # Cycles the climb animation
+    def update_climbing_animation(self):
+        if self.alive and self.climbing:
+            self.climbing_frame_index = (self.climbing_frame_index + 1) % len(self.down_states)
+            self.image = self.full_sheet.subsurface(self.down_states[self.climbing_frame_index])
+        else: 
+            self.image = self.full_sheet.subsurface(self.dead_right[0])
+
+    # # Climbs up
+    # def climb(self):
+    #     if self.ladder and self.climbing and self.alive:
+    #             self.change_y = -1
+    #             #self.clip(self.down_states)
+
+    # # Climbs down
+    # def climb2(self):
+    #     if self.ladder and self.climbing and self.alive:
+    #             self.change_y = +1
+    #             #self.clip(self.down_states)               
+
+    # Climbs up
+    def climb(self):
+        if self.ladder:
+            self.climbing = True
+            self.change_y = -1
+            self.update_climbing_animation()
+
+    # Climbs down
+    def climb2(self):
+        if self.ladder:
+            self.climbing = True
+            self.change_y = 1
+            self.update_climbing_animation()
+
+    # Stops climbing
+    def stop_climbing(self):
+        self.climbing = False
+        self.change_y = 0
+        self.climbing_frame_index = 0
+
     # Moves left
-    def go_left(self, scroll):
-        self.facing_right = False
-        if (scroll < 6):
+    def go_left(self):
+        if self.is_level_2:
+            self.facing_right = False
             self.clip(self.left_states)
-            self.change_x = -1
-        else:
-            #self.stop()
-            self.change_x = 0
+            if self.rect.x > 0:
+                self.change_x = -3
+        else: 
+            self.facing_right = False
+            self.clip(self.left_states)
+            if self.rect.x > 0:
+                self.change_x = -1 
  
     # Moves right
-    def go_right(self, scroll):
-        self.facing_right = True
-        self.clip(self.right_states)
-        self.change_x = 1
+    def go_right(self):
+        if self.is_level_2:
+            self.facing_right = True
+            self.clip(self.right_states)
+            if self.rect.x < 700:
+                self.change_x = 3
+        else: 
+            self.facing_right = True
+            self.clip(self.right_states)
+            if self.rect.x < 700:
+                self.change_x = 1  
 
     # Stops movement
     def stop(self):

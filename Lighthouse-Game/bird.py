@@ -6,7 +6,7 @@ SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
 class Character(pygame.sprite.Sprite):
-    def __init__(self, position):
+    def __init__(self, position, spawned):
         self.sheet = pygame.image.load("seagull-spritesheet.png")
         self.attack_sheet = pygame.image.load("seagull-attack.png")
 
@@ -22,6 +22,7 @@ class Character(pygame.sprite.Sprite):
         
         # Defaults to false
         self.is_returning = False
+        self.bird2_has_spawned = spawned
 
         # Variable for looping the frame sequence
         self.frame = 0
@@ -135,11 +136,12 @@ class Character(pygame.sprite.Sprite):
 
             else:
                 # Attacks the player
-                if (player.Character.alive):
-                    self.attack_player()
-                else:
-                    self.is_attacking = False
-                    self.is_returning = False   
+                if not self.bird2_has_spawned:
+                    if (player.Character.alive):
+                        self.attack_player()
+                    else:
+                        self.is_attacking = False
+                        self.is_returning = False   
 
     # Changes the horizontal direction of the bird
     def change_direction(self):
