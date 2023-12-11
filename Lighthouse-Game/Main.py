@@ -4,7 +4,6 @@ import bird
 import pauseMenu
 from bird import Character
 
-
 pygame.init()
 
 # =========================================
@@ -24,6 +23,8 @@ left_scroll_limit = -2
 bird2_has_spawned = False
 # Flag to track whether the prompt should be displayed
 display_prompt = False
+gameWon = False
+gameOver = False
 
 # Screen dimensions
 SCREEN_WIDTH = 800
@@ -141,8 +142,9 @@ elif is_level_2:
 
 player = player.Character(player_start, ground_width)
 bird = bird.Character((500, 10), bird2_has_spawned)
-#bird2 = None
+bird1 = Character((950, 20), bird2_has_spawned)
 bird2 = Character((500, -200), bird2_has_spawned)
+bird3 = Character((700, -200), bird2_has_spawned)
 PLAYER_SPEED = 1
 scroll = 0
 new_scroll = 0
@@ -169,7 +171,7 @@ def reset_player_position():
 
 # Function to switch between levels
 def switch_level(new_level, new_scroll):
-    global bird2, bird2_has_spawned, current_level, scroll, at_lighthouse_entrance_door, ground_image, ground_height, ground_width, is_level_1, is_level_2, left_scroll_limit, right_scroll_limit
+    global bird3, bird2, bird1, bird2_has_spawned, current_level, scroll, at_lighthouse_entrance_door, ground_image, ground_height, ground_width, is_level_1, is_level_2, left_scroll_limit, right_scroll_limit
     current_level = [new_level]
     # print("Switching levels...")
     # print(f"is_level_1: {is_level_1}, is_level_2: {is_level_2}")
@@ -190,8 +192,9 @@ def switch_level(new_level, new_scroll):
         # print(f"is_level_1: {is_level_1}, is_level_2: {is_level_2}")
         # print(f"new_level: {new_level}, new_scroll: {new_scroll}")
         reset_player_position()
-        # Reveals second bird
+        # Reveals new birds
         bird2.rect.y = 10
+        bird3.rect.y = 160
     else:
         scroll = 0#new_scroll
         left_scroll_limit = -100
@@ -323,8 +326,8 @@ while run:
                 print("GAME PAUSED")
                 paused = pauseMenu.display_pause_menu(screen)  # Call the pause menu function
             # ===========================================
-            if event.key == pygame.K_2:
-                is_level_2 = True
+            # if event.key == pygame.K_2: #* Speedboost
+            #     is_level_2 = True
             if (player.alive):
                 if event.key == pygame.K_LEFT:
                     new_position_x = player.rect.x - PLAYER_SPEED
@@ -349,6 +352,8 @@ while run:
                     player.punch = True    
                     if pygame.sprite.collide_rect(bird, player):
                         bird.take_damage()
+                    if pygame.sprite.collide_rect(bird1, player):
+                        bird1.take_damage()    
         elif event.type == pygame.KEYUP:
             if event.key in (pygame.K_LEFT, pygame.K_RIGHT):
                 player.stop()   
@@ -369,8 +374,9 @@ while run:
         if is_level_1:
             scroll -= (player.change_x * 5)
         else:
-            scroll -= (player.change_x * 5) 
-    # print(f"Player X: {player.rect.x}, Change X: {player.change_x}, Scroll: {scroll}, Change Y: {player.change_y}")
+            scroll -= (player.change_x * 5)
+    if player.alive:         
+        print(f"Player X: {player.rect.x}, Player Y: {player.rect.y}, Change X: {player.change_x}, Scroll: {scroll}, Change Y: {player.change_y}") #*
 
     # Limits the scrolling to the size of the ground image
     scroll = max(min(0, scroll), SCREEN_WIDTH - ground_image.get_width())
@@ -393,10 +399,24 @@ while run:
         if pygame.sprite.collide_rect(bird, player) and not player.invulnerable:
             player.take_damage()
             current_health = player.health
+    if (player.alive and bird1.alive):
+        if pygame.sprite.collide_rect(bird1, player) and not player.invulnerable:
+            player.take_damage()
+            current_health = player.health 
     if (player.alive and bird2.alive):
         if pygame.sprite.collide_rect(bird2, player) and not player.invulnerable:
             player.take_damage()
-            current_health = player.health        
+            current_health = player.health     
+    if (player.alive and bird3.alive):
+        if pygame.sprite.collide_rect(bird3, player) and not player.invulnerable:
+            player.take_damage()
+            current_health = player.health          
+
+    # Checks for win condition
+    if (player.alive and player.rect.y < -200 and is_level_2):
+        gameWon = True
+        # pygame.quit()
+        paused = pauseMenu.display_pause_menu(screen)  # Call the pause menu function
 
     # Draws the health bar
     for i in range(max_health):
@@ -406,6 +426,7 @@ while run:
             screen.blit(empty_heart_image, (10 + i * 40, SCREEN_HEIGHT - 40))
 
     # Updates the birds
+    # Outside birds
     if bird.alive:
         bird.update()
         bird.detect_player_proximity(player)
@@ -416,8 +437,17 @@ while run:
                 bird.change_direction()  
         elif is_level_2:
             if not bird2_has_spawned:
-                bird.die() 
-
+                bird.die()
+                bird1.die()
+    if bird1.alive:
+        bird1.update()
+        bird1.detect_player_proximity(player)
+        if is_level_1:
+            if bird1.rect.x > 1000:
+                bird1.change_direction()
+            if bird1.rect.x < -200:
+                bird1.change_direction()  
+    # Inside birds
     if bird2.alive:
         bird2.update()
         bird2.velocity_x = 8
@@ -425,13 +455,24 @@ while run:
             bird2.change_direction()
         if bird2.rect.x < 0:
             bird2.change_direction() 
+    if bird3.alive:
+        bird3.update()
+        bird3.velocity_x = 6
+        if bird3.rect.x > 700:
+            bird3.change_direction()
+        if bird3.rect.x < 0:
+            bird3.change_direction()         
 
     # Draws the player and birds
     screen.blit(player.image, player.rect)
     if bird.alive:
         screen.blit(bird.image, bird.rect)
+    if bird1.alive:
+        screen.blit(bird1.image, bird1.rect)     
     if bird2.alive:
         screen.blit(bird2.image, bird2.rect)    
+    if bird3.alive:
+        screen.blit(bird3.image, bird3.rect)    
 
     # Checks if player is at the the front door of the lighthouse
     if is_level_1:

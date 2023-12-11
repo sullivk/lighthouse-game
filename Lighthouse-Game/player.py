@@ -42,7 +42,7 @@ class Character(pygame.sprite.Sprite):
         self.frame_index = 0
         self.health = 5
         self.invulnerable = False
-        self.invulnerability_duration = 3000
+        self.invulnerability_duration = 5000
         self.last_damage_time = 0
         self.alive = True
         self.fall_speed = 1
@@ -254,6 +254,8 @@ class Character(pygame.sprite.Sprite):
     def die(self):
         self.alive = False
         self.stop()
+        self.is_jumping = False 
+        self.change_y = 1
         if self.facing_right:
             self.full_sheet.set_clip(pygame.Rect(0, 0, 124, 190))
             self.image = self.full_sheet.subsurface(self.dead_right[0])
