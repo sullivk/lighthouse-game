@@ -1,9 +1,8 @@
 import pygame
 import os
 
-def display_pause_menu(screen, paused, run):
+def display_losing_screen(screen, paused, run):
     paused = True
-    is_controls = False
 
     try:
         pause_bg = pygame.image.load("Prompt Images/resized_pause_menu_bg.png").convert_alpha()
@@ -78,16 +77,13 @@ def display_pause_menu(screen, paused, run):
     return paused
 
 def draw_button(screen, text, rect, clicked, hovered):
-    #print("Hovered:", hovered) 
     border_color = (0, 0, 0)
     text_color = (0, 0, 0)  # Default text color black - DONT CHANGE
     
     if clicked:
-        #print("Clicked:", clicked) 
         border_color = (50, 50, 50)  # Change color when clicked
         text_color = (255, 255, 255)  # Change color when clicked
     elif hovered:
-        #print("Hovered:", hovered) 
         border_color = (255, 255, 255)  # Change border color when hovered
         text_color = (255, 255, 255) 
 
