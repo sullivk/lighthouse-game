@@ -2,6 +2,7 @@ import pygame
 import math
 import player
 
+# Screen dimensions
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
@@ -36,14 +37,10 @@ class Character(pygame.sprite.Sprite):
         # Attack states
         self.down_states = { 0: (0, 0, self.rectWidth, self.rectHeight),
                             #1: (350, 32, self.rectWidth, self.rectHeight)
-                             
-                             
-                              }     
+                            }     
             
         self.up_states = { 0: (0, 0, self.rectWidth, self.rectHeight),
-                          #1: (350, 32, self.rectWidth, self.rectHeight)
-                           
-                           
+                            #1: (350, 32, self.rectWidth, self.rectHeight)
                             }  
          
         # Right/left movement states 
@@ -58,8 +55,7 @@ class Character(pygame.sprite.Sprite):
                             8: (1290, 170, self.rectWidth, self.rectHeight),
                             9: (1142, 170, self.rectWidth, self.rectHeight),
                             10: (997, 170, self.rectWidth, self.rectHeight)
-                             
-                              }
+                            }
 
         self.left_states = {  0: (0, 0, self.rectWidth, self.rectHeight), 
                             1: (148, 0, self.rectWidth, self.rectHeight),
@@ -71,7 +67,8 @@ class Character(pygame.sprite.Sprite):
                             7: (140, 176, self.rectWidth, self.rectHeight),
                             8: (285, 176, self.rectWidth, self.rectHeight),
                             9: (440, 176, self.rectWidth, self.rectHeight),
-                            10: (585, 170, self.rectWidth, self.rectHeight) }
+                            10: (585, 170, self.rectWidth, self.rectHeight) 
+                            }
         
         # Variables for the bird
         self.rect.topleft = position
@@ -112,8 +109,6 @@ class Character(pygame.sprite.Sprite):
     # Causes the bird to die
     def die(self):
         self.alive = False
-        print("rip birdo")
-        print("rip birdo")
         print("rip birdo")
 
     # Updates the bird

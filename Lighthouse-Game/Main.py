@@ -54,7 +54,6 @@ empty_heart_image = pygame.transform.scale(empty_heart_image, (30, 30)) #Added
 
 # Loads background images
 bg_images = []
-
 for i in range(3):
     bg_image = pygame.image.load(f"BG1/background/IMG_{i}.png").convert_alpha()
     bg_images.append(bg_image)
@@ -98,11 +97,9 @@ bg2_ground_image = pygame.image.load("BG2/ground/ground.png").convert_alpha()
 bg2_ground_width = bg2_ground_image.get_width()
 bg2_ground_height = bg2_ground_image.get_height()
 
-
 # ============================================
 # Section 3: Create New Levels
 # ============================================
-
 
 # Function to load a new level
 def load_level(level_folder):
@@ -111,16 +108,13 @@ def load_level(level_folder):
     level_width = level_image.get_width()
     return level_image, level_width, ground_image
 
-
 # Loads BG2 level
 bg2_image, bg2_right_scroll_limit, bg2_ground_image = load_level("BG2")
 # Set the ground image to the new level's ground image
 
-
 # ========================================
 # Section 4: Draw Functions and Player
 # ========================================
-
 
 # Draws the background images
 def draw_bg(current_level):
@@ -133,7 +127,6 @@ def draw_bg(current_level):
     for y in range(2, 3):
         if y < len(current_level):  # Check if the index is within the list
             screen.blit(current_level[y], (int(0 - scroll * speed * 0.5), SCREEN_HEIGHT * 0.5))
-
 
 # Draws the ground
 def draw_ground():
@@ -173,32 +166,29 @@ def reset_player_position():
     elif is_level_2:
         # Set the player's x position to be inside the lighthouse
         player.rect.x = 20
-        #player.rect.y = 40 # ???
 
 # Function to switch between levels
 def switch_level(new_level, new_scroll):
     global bird2, bird2_has_spawned, current_level, scroll, at_lighthouse_entrance_door, ground_image, ground_height, ground_width, is_level_1, is_level_2, left_scroll_limit, right_scroll_limit
     current_level = [new_level]
-    print("Switching levels...")
-    print(f"is_level_1: {is_level_1}, is_level_2: {is_level_2}")
-    print(f"new_level: {new_level}, new_scroll: {new_scroll}")
+    # print("Switching levels...")
+    # print(f"is_level_1: {is_level_1}, is_level_2: {is_level_2}")
+    # print(f"new_level: {new_level}, new_scroll: {new_scroll}")
 
     if new_level == bg2_image:
         left_scroll_limit = -100
         right_scroll_limit = bg2_right_scroll_limit
         is_level_1 = False
         is_level_2 = True
-        print("Switching to level 2")
+        # print("Switching to level 2")
         ground_image = bg2_ground_image
         ground_height = bg2_ground_height
         ground_width = bg2_ground_width
         level_image = bg2_image
         at_lighthouse_entrance_door = False
         scroll = 0
-        #scroll = new_scroll
-        #load_level("BG2")
-        print(f"is_level_1: {is_level_1}, is_level_2: {is_level_2}")
-        print(f"new_level: {new_level}, new_scroll: {new_scroll}")
+        # print(f"is_level_1: {is_level_1}, is_level_2: {is_level_2}")
+        # print(f"new_level: {new_level}, new_scroll: {new_scroll}")
         reset_player_position()
         # Reveals second bird
         bird2.rect.y = 10
@@ -212,7 +202,6 @@ def switch_level(new_level, new_scroll):
         at_lighthouse_entrance_door = False
         reset_player_position()
 
-
 # Initializes the arrow position to "Yes" by default
 arrow_position = "Yes"
 
@@ -222,20 +211,8 @@ def display_text_prompt():
 
     if display_prompt == True:
         # Create a custom dialogue box background
-        #prompt_bg = pygame.Surface((400, 150))
-        #prompt_bg.fill((255, 255, 255))  # Background color (white)
         prompt_bg = pygame.image.load("Prompt Images/tattered_prompt.png").convert_alpha()
         prompt_bg = pygame.transform.scale(prompt_bg, (400, 200))
-
-
-        # Draw a border for the dialogue box
-        #border_rect = pygame.draw.rect(
-            #prompt_bg, (0, 0, 0), pygame.Rect(0, 0, 400, 150), 3
-        #)  # Border color (black), thickness 3
-
-        # Get the dimensions of the drawn rectangle
-        #border_width = border_rect.width #TEST
-        #border_height = border_rect.height #TEST
 
         # Get the dimensions of the prompt_bg
         prompt_bg_width = prompt_bg.get_width()
@@ -243,14 +220,14 @@ def display_text_prompt():
 
         # Print or use the dimensions as needed
         #print("Dimensions of the drawn rectangle:", border_width, "x", border_height)
-        print("Dimensions of the prompt_bg:", prompt_bg_width, "x", prompt_bg_height)
+        #print("Dimensions of the prompt_bg:", prompt_bg_width, "x", prompt_bg_height)
 
-        # Create a custom font for the text
+        # Creates a custom font for the text
         prompt_font = pygame.font.Font(
             None, 24
         )  # You can adjust the font size as needed
 
-        # Render and display the text on the dialogue box
+        # Renders and displays the text on the dialogue box
         if is_level_1 and player.rect.x >= 615 and player.rect.x <= 650:
             prompt_text = prompt_font.render(
                 "Do you want to enter the lighthouse?",
@@ -270,7 +247,7 @@ def display_text_prompt():
         # Creates a custom font for the selected option
         selected_option_font = pygame.font.Font(None, 36)
 
-        # Load the arrow image
+        # Loads the arrow image
         pointer_image = pygame.image.load('pointer.png') #Added
         pointer_image = pygame.transform.scale(pointer_image, (30, 30)) #Added
 
@@ -279,32 +256,31 @@ def display_text_prompt():
 
         # Renders and displays the selected option with the arrow
         selected_text = selected_option_font.render(text_yes, True, (0, 0, 0))
-        # Create a new surface to combine the arrow image and text
+        # Creates a new surface to combine the arrow image and text
         combined_surface = pygame.Surface((pointer_image.get_width() + selected_text.get_width(), max(pointer_image.get_height(), selected_text.get_height())))
         combined_surface.fill((255, 255, 255))  # Set the background color (white)
         combined_surface.blit(pointer_image, (0, 0))  # Blit the arrow image
         combined_surface.blit(selected_text, (pointer_image.get_width(), 0))
-
+        # Positions the selected text
         selected_rect = selected_text.get_rect(
             center=(200, 110)
-        )  # Positions the selected text
+        )
 
         # Displays the selected and other options
         prompt_bg.blit(selected_text, selected_rect)
 
-        # Calculate the position of the arrow based on the arrow_position
+        # Calculates the position of the arrow based on the arrow_position
         arrow_x = 60
 
-        # Blit the arrow image onto the prompt_bg
+        # Blits the arrow image onto the prompt_bg
         prompt_bg.blit(pointer_image, (arrow_x, 95)) #Added
-
         screen.blit(prompt_bg, (150, 400))
 
 # Initializes variables to track key states
 left_key_pressed = False
 right_key_pressed = False
 
-# Create the game window
+# Creates the game window
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Discover the Lighthouse")
 
@@ -334,7 +310,7 @@ while run:
     # =================================
     # Section 6: Draw Background and Ground
     # =================================
-    draw_bg(current_level)  # Changed: draw_bg() -> draw_bg(current_level)
+    draw_bg(current_level)
     draw_ground()
     
     # Handles user input
@@ -360,21 +336,15 @@ while run:
                         player.go_right()
                 elif event.key == pygame.K_UP:
                     if at_ladder:
-                        player.rect.y -= 10
+                        player.rect.y -= 15
                         player.climbing = True
-                        player.update_climbing_animation()
-                        #player.climb()
+                        player.update_climbing_animation2(True)
                     else:    
                         player.jump()
-                elif event.type == pygame.KEYUP:
-                    if event.key == pygame.K_UP and at_ladder:
-                        #player.climbing = False
-                        player.stop_climbing()
                 elif event.key == pygame.K_DOWN:
                     if at_ladder:
-                        player.rect.y += 10
-                        player.update_climbing_animation()
-                        #player.climb2()        
+                        player.rect.y += 15
+                        player.update_climbing_animation2(True)     
                 if event.key == pygame.K_SPACE:
                     player.punch = True    
                     if pygame.sprite.collide_rect(bird, player):
@@ -400,7 +370,7 @@ while run:
             scroll -= (player.change_x * 5)
         else:
             scroll -= (player.change_x * 5) 
-    print(f"Player X: {player.rect.x}, Change X: {player.change_x}, Scroll: {scroll}, Change Y: {player.change_y}")
+    # print(f"Player X: {player.rect.x}, Change X: {player.change_x}, Scroll: {scroll}, Change Y: {player.change_y}")
 
     # Limits the scrolling to the size of the ground image
     scroll = max(min(0, scroll), SCREEN_WIDTH - ground_image.get_width())
@@ -476,8 +446,9 @@ while run:
 
     # Checks if player is at the ladder
     if is_level_2:
-        if player.rect.x >= 325 and player.rect.x <= 385:
-            at_ladder = True
+        if player.rect.x >= 365 and player.rect.x <= 375:
+            if player.alive:
+                at_ladder = True
         else:
             at_ladder = False
 
