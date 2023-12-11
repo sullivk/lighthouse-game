@@ -375,8 +375,8 @@ while run:
             scroll -= (player.change_x * 5)
         else:
             scroll -= (player.change_x * 5)
-    if player.alive:         
-        print(f"Player X: {player.rect.x}, Player Y: {player.rect.y}, Change X: {player.change_x}, Scroll: {scroll}, Change Y: {player.change_y}") #*
+    #if player.alive:         
+        #print(f"Player X: {player.rect.x}, Player Y: {player.rect.y}, Change X: {player.change_x}, Scroll: {scroll}, Change Y: {player.change_y}") #*
 
     # Limits the scrolling to the size of the ground image
     scroll = max(min(0, scroll), SCREEN_WIDTH - ground_image.get_width())
