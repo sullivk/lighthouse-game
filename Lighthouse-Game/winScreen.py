@@ -34,7 +34,7 @@ def display_winning_screen(screen, paused, run):
         for button in buttons:
             if button["rect"].collidepoint(pygame.mouse.get_pos()):
                 button["hovered"] = True
-                pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
+                #pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
             else:
                 button["hovered"] = False
 
@@ -87,7 +87,7 @@ def draw_button(screen, text, rect, clicked, hovered):
         border_color = (255, 255, 255)  # Change border color when hovered
         text_color = (255, 255, 255) 
 
-    pygame.draw.rect(screen, border_color, rect, border_radius=5, width=3)  # Draw button border
+    pygame.draw.rect(screen, border_color, rect, 5)#border_radius=5, width=3)  # Draw button border
 
     font = pygame.font.Font(None, 24)
     text_surface = font.render(text, True, text_color)

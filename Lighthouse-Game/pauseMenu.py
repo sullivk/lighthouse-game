@@ -39,7 +39,7 @@ def display_pause_menu(screen, paused):
         for button in buttons:
             if button["rect"].collidepoint(pygame.mouse.get_pos()):
                 button["hovered"] = True
-                pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
+                #pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
             else:
                 button["hovered"] = False
 
@@ -92,7 +92,7 @@ def draw_button(screen, text, rect, clicked, hovered):
         border_color = (255, 255, 255)  # Change border color when hovered
         text_color = (255, 255, 255) 
 
-    pygame.draw.rect(screen, border_color, rect, border_radius=5, width=3)  # Draw button border
+    pygame.draw.rect(screen, border_color, rect, 5)#border_radius=5, width=3)  # Draw button border
 
     font = pygame.font.Font(None, 24)
     text_surface = font.render(text, True, text_color)
@@ -152,7 +152,7 @@ def display_controls_menu(screen, is_controls):
         # Check if the mouse is over the back button and set cursor accordingly
         if back_button["rect"].collidepoint(pygame.mouse.get_pos()):
             back_button["hovered"] = True
-            pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
+            #pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
         else:
             back_button["hovered"] = False
 
