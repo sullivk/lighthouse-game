@@ -66,8 +66,8 @@ def display_pause_menu(screen, paused):
         # Add your pause menu logic (e.g., button clicks, resume game, etc.)
         keys = pygame.key.get_pressed()
         if keys[pygame.K_r]:  # Resume game
-            #paused = False # WORKS
-            paused = handle_button_click({"text": "Resume"}, screen, paused)
+            paused = False # WORKS
+            #paused = handle_button_click({"text": "Resume"}, screen, paused)
         elif keys[pygame.K_q]:  # Quit game
             pygame.quit()
             quit()
