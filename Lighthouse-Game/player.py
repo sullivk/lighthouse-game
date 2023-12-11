@@ -67,8 +67,8 @@ class Character(pygame.sprite.Sprite):
                              1: (135, 611, self.rectWidth, self.rectHeight)
                             }     
         
-        self.up_states = { 0: (35, 602, self.rectWidth, self.rectHeight),
-                           1: (35, 602, self.rectWidth, self.rectHeight) 
+        self.up_states = { #0: (35, 602, self.rectWidth, self.rectHeight),
+                           #1: (35, 602, self.rectWidth, self.rectHeight) 
                            }  
          
         # Right/left punch states
@@ -109,69 +109,6 @@ class Character(pygame.sprite.Sprite):
         else:
             self.sheet.set_clip(pygame.Rect(clipped_rect))
         return clipped_rect
-
-    # # Updates the player
-    # def update(self, level, at_ladder):
-    #     if not self.alive:
-    #         self.image = self.full_sheet.subsurface(self.dead_right[0]) # dead_left is broken
-    #     else:    
-    #         self.ladder = at_ladder
-    #         if self.ladder:
-    #             self.update_climbing_animation2()
-    #         else:
-    #             self.is_level_2 = level
-    #             self.calculate_gravity(self.ladder)
-    #             if not self.alive and self.rect.y >= self.ground_level:
-    #                 self.change_y = 0
-    #                 self.rect.y = self.ground_level + 200
-    #                 return
-    #             else: 
-    #                 # Handles punching
-    #                 if self.punch:
-    #                     current_time = pygame.time.get_ticks()
-    #                     if current_time - self.last_frame_time > self.frame_delay/10:
-    #                         if self.facing_right:
-    #                             self.frame_index = (self.frame_index + 1) % len(self.punch_right_states)
-    #                             self.last_frame_time = current_time
-    #                             self.image = self.punch_bird_sheet.subsurface(self.punch_right_states[self.frame_index])
-    #                         else:
-    #                             self.frame_index = (self.frame_index + 1) % len(self.punch_left_states)
-    #                             self.last_frame_time = current_time
-    #                             self.image = self.punch_bird_sheet.subsurface(self.punch_left_states[self.frame_index])    
-
-    #                     # Checks if the punch duration has elapsed
-    #                     if current_time - self.punch_time > self.punch_duration:
-    #                         self.punch = False
-
-    #                 # Makes sure the player faces the correct way
-    #                 elif self.change_x > 0:
-    #                     self.clip(self.right_states)
-    #                 elif self.change_x < 0:
-    #                     self.clip(self.left_states)
-                    
-    #                 # Handles jumping
-    #                 if self.is_jumping:
-    #                     self.change_y += 0.35
-    #                     if self.rect.y >= self.ground_level:
-    #                         self.is_jumping = False
-    #                         self.change_y = 0
-    #                         self.rect.y = self.ground_level
-
-    #                 # Updates sprite position
-    #                 self.rect.x += self.change_x
-    #                 self.rect.y += self.change_y
-
-    #                 # Updates the sprite image based on direction and ensure the animation frame rate is controlled
-    #                 current_time = pygame.time.get_ticks()
-    #                 if current_time - self.last_frame_time > self.frame_delay:
-    #                     self.frame_index = (self.frame_index + 1) % len(self.right_states)
-    #                     self.last_frame_time = current_time
-    #                     if self.change_x > 0:
-    #                         self.clip(self.right_states)
-    #                     elif self.change_x < 0:
-    #                         self.clip(self.left_states)
-
-    #                     self.image = self.sheet.subsurface(self.sheet.get_clip())
 
     # Updates the player
     def update(self, level, at_ladder):

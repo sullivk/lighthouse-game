@@ -25,8 +25,6 @@ left_scroll_limit = -2
 bird2_has_spawned = False
 # Flag to track whether the prompt should be displayed
 display_prompt = False
-gameWon = False
-gameOver = False
 
 # Screen dimensions
 SCREEN_WIDTH = 800
@@ -330,8 +328,6 @@ while run:
                 print("GAME PAUSED")
                 paused = pauseMenu.display_pause_menu(screen, False)  # Call the pause menu function
             # ===========================================
-            # if event.key == pygame.K_2: #* Speedboost
-            #     is_level_2 = True
             if (player.alive):
                 if event.key == pygame.K_LEFT:
                     new_position_x = player.rect.x - PLAYER_SPEED
@@ -418,12 +414,10 @@ while run:
 
     # Checks for win condition
     if (player.alive and player.rect.y < -200 and is_level_2):
-        gameWon = True
         run = winScreen.display_winning_screen(screen, paused, run)
 
     # Checks for loss condition
     if current_health < 1:
-        gameOver = True
         run = loseScreen.display_losing_screen(screen, paused, run)
 
     # Draws the health bar
@@ -495,7 +489,7 @@ while run:
 
     # Checks if player is at the ladder
     if is_level_2:
-        if player.rect.x >= 365 and player.rect.x <= 375:
+        if player.rect.x >= 355 and player.rect.x <= 375:
             if player.alive:
                 at_ladder = True
         else:

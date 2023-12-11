@@ -39,7 +39,7 @@ class Character(pygame.sprite.Sprite):
                             #1: (350, 32, self.rectWidth, self.rectHeight)
                             }     
             
-        self.up_states = { 0: (0, 0, self.rectWidth, self.rectHeight),
+        self.up_states = { #0: (0, 0, self.rectWidth, self.rectHeight),
                             #1: (350, 32, self.rectWidth, self.rectHeight)
                             }  
          
