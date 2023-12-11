@@ -42,7 +42,7 @@ class Character(pygame.sprite.Sprite):
         self.frame_index = 0
         self.health = 5
         self.invulnerable = False
-        self.invulnerability_duration = 5000
+        self.invulnerability_duration = 4500
         self.last_damage_time = 0
         self.alive = True
         self.fall_speed = 1

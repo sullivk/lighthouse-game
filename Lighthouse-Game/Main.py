@@ -2,6 +2,8 @@ import pygame
 import player
 import bird
 import pauseMenu
+import winScreen
+import loseScreen
 from bird import Character
 
 pygame.init()
@@ -302,7 +304,7 @@ while title_menu:
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:  # Space bar pressed to start the game
                 title_menu = False
-                run = True
+                run = True   
 
     screen.blit(title_background_image, (0, 0))
     pygame.display.flip()
@@ -321,10 +323,12 @@ while run:
         if event.type == pygame.QUIT:
             run = False
         elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_q:
+                run = False
             # Added for ingame menu =====================
             if event.key == pygame.K_p:
                 print("GAME PAUSED")
-                paused = pauseMenu.display_pause_menu(screen)  # Call the pause menu function
+                paused = pauseMenu.display_pause_menu(screen, False)  # Call the pause menu function
             # ===========================================
             # if event.key == pygame.K_2: #* Speedboost
             #     is_level_2 = True
@@ -415,8 +419,12 @@ while run:
     # Checks for win condition
     if (player.alive and player.rect.y < -200 and is_level_2):
         gameWon = True
-        # pygame.quit()
-        paused = pauseMenu.display_pause_menu(screen)  # Call the pause menu function
+        run = winScreen.display_winning_screen(screen, paused, run)
+
+    # Checks for loss condition
+    if current_health < 1:
+        gameOver = True
+        run = loseScreen.display_losing_screen(screen, paused, run)
 
     # Draws the health bar
     for i in range(max_health):
